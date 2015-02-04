@@ -1,0 +1,47 @@
+apply plugin: 'findbugs'
+
+task findBugs (type: FindBugs, dependsOn: assemble) {
+    group "verification"
+    description "Runs findbugs"
+    classes = fileTree("$project.projectDir/build/classes/debug/")
+    source = fileTree("$project.projectDir/src/main/java/")
+    classpath = files()
+    effort = 'max'
+    ignoreFailures = false
+}
+
+tasks.withType(FindBugs) {
+    reports {
+        xml.enabled = false
+        html.enabled = true
+        html.destination = "$project.buildDir/reports/findbugs/" + getReportFileName()
+    }
+    excludeFilter = file("$project.rootDir/config/findbugs/exclude.xml")
+}
+
+gradle.taskGraph.afterTask { Task task, TaskState state ->
+
+    def projectPlugins = task.getProject().getPlugins()
+
+    if ((task.getName() != null && task.getName().toLowerCase().equals("assemble"))
+            && (projectPlugins.hasPlugin("android")
+            || projectPlugins.hasPlugin("android-library"))) {
+
+        def hasFindBugsTask = task.getProject().getTasksByName('findBugs', false).size() > 0
+
+        if (hasFindBugsTask) {
+            println ":" + task.getProject().getName() + ":findBugs"
+
+            task.getProject().getTasks().getByName('findBugs').execute()
+        } else {
+            logger.warn("WARNING: Project doesnot have findBugs.Include it")
+        }
+
+    }
+}
+
+def getReportFileName() {
+    ext.formattedDate = (new Date()).format('yyyyMMdd_HHmmss')
+    ext.fileName = "findBugsReport-${project.name}" + formattedDate + ".html"
+    return fileName
+}

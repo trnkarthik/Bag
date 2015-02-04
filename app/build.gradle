@@ -1,0 +1,152 @@
+apply plugin: 'com.android.application'
+apply plugin: 'hugo'
+apply from: '../gradle_includes/findbugs.gradle'
+//apply plugin: 'errorprone'
+
+/*
+    From https://github.com/stanfy/spoon-gradle-plugin/blob/master/example/build.gradle
+ */
+buildscript {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+    }
+
+    dependencies {
+        classpath 'com.stanfy.spoon:spoon-gradle-plugin:0.14.1'
+    }
+}
+
+apply plugin: 'spoon'
+
+spoon {
+
+    // Enable debug output
+    debug = true
+
+    // Set custom test reports directory (defaults to "spoon")
+    baseOutputDir = file("$buildDir/custom-report-dir")
+
+    // Enable setting test class/method-to-be-run from command line. E.g.:
+    // $> ../gradlew spoonFreeDebugTest -PspoonClassName=com.stanfy.spoon.example.test.MainActivityTest -PspoonMethodName=testSetText
+    if (project.hasProperty('spoonClassName')) {
+        className = project.spoonClassName
+
+        if (project.hasProperty('spoonMethodName')) {
+            methodName = project.spoonMethodName
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    provided 'com.squareup.dagger:dagger-compiler:1.2.2'
+    debugCompile 'com.squareup.retrofit:retrofit-mock:1.4.1'
+    debugCompile 'com.jakewharton.madge:madge:1.1.1'
+    debugCompile 'com.jakewharton.scalpel:scalpel:1.1.1'
+    //espresso from https://github.com/JakeWharton/double-espresso
+    androidTestCompile('com.jakewharton.espresso:espresso:1.1-r3') {
+        exclude group: 'com.squareup.dagger'
+    }
+    androidTestCompile('com.jakewharton.espresso:espresso-support-v4:1.1-r3') {
+        exclude group: 'com.squareup.dagger'
+        exclude group: 'com.android.support'
+    }
+    compile project(path: ':missile', configuration: 'android-endpoints')
+    compile('com.viewpagerindicator:library:2.4.1') {
+        exclude module: 'support-v4'
+    }
+    //We need to find a solution to the 65k method limit issue. This might be helpful
+
+    //http://android-developers.blogspot.com/2014/12/google-play-services-and-dex-method.html
+
+    //compile 'com.google.android.gms:play-services:6.5.87'
+
+    //    compile 'com.google.android.gms:play-services:6.1.71'
+    compile 'com.squareup.dagger:dagger:1.2.2'
+    compile 'com.google.code.findbugs:jsr305:2.0.1'
+    compile 'com.squareup.okhttp:okhttp:2.0.0'
+    compile 'com.squareup.okhttp:okhttp-urlconnection:2.0.0'
+    compile 'com.squareup.picasso:picasso:2.3.4'
+    compile 'com.squareup.retrofit:retrofit:1.6.1'
+    compile 'com.jakewharton:butterknife:5.1.2'
+    compile 'com.jakewharton.timber:timber:2.4.1'
+    compile 'com.netflix.rxjava:rxjava-core:0.20.2'
+    compile 'com.netflix.rxjava:rxjava-android:0.20.2'
+    compile 'me.grantland:autofittextview:0.1.1'
+    compile 'org.slf4j:slf4j-android:1.7.7'
+    compile 'net.danlew:android.joda:2.4.0'
+    compile 'com.etsy.android.grid:library:1.0.3'
+    compile 'de.hdodenhof:circleimageview:1.2.0'
+    compile 'com.android.support:support-v4:21.0.3'
+    compile 'com.android.support:appcompat-v7:21.0.3'
+    compile 'com.android.support:support-v13:21.0.3'
+    compile 'com.google.android.gms:play-services-plus:6.5.87'
+    //    compile 'com.google.android.gms:play-services:6.5.87'
+    compile 'com.facebook.android:facebook-android-sdk:3.21.1'
+}
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion "21.1.2"
+    defaultConfig {
+        applicationId "com.getmebag.bag"
+        minSdkVersion 15
+        targetSdkVersion 21
+        versionCode 1
+        versionName "1.0"
+
+        // espresso from https://code.google.com/p/android-test-kit/wiki/Espresso
+        // + https://github.com/JakeWharton/double-espresso
+        testInstrumentationRunner "com.google.android.apps.common.testing.testrunner.GoogleInstrumentationTestRunner"
+    }
+
+    lintOptions {
+        abortOnError true
+        warningsAsErrors true
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            minifyEnabled false
+            zipAlignEnabled true
+            applicationIdSuffix ".debug"
+        }
+        packagingOptions {
+            //TODO : Joda libraries contains duplicates.Take care of these later
+            // from https://code.google.com/p/android-test-kit/wiki/Espresso
+            exclude 'LICENSE.txt'
+            exclude 'LICENSE'
+            exclude 'NOTICE'
+            exclude 'asm-license.txt'
+            exclude 'META_INF/LICENSE.txt'
+            exclude 'META_INF/NOTICE.txt'
+            exclude 'META_INF/LICENSE'
+            exclude 'META_INF/NOTICE'
+            exclude 'META_INF/ASL2.0'
+            exclude 'META_INF/services/javax.annotation.processing.Processor'
+        }
+    }
+
+}
+// Referred from https://github.com/f2prateek/android-couchpotato/blob/master/couchpotato/build.gradle
+android.applicationVariants.all { variant ->
+    def name = variant.buildType.name
+    // Checkstyle
+    def checkstyle = project.tasks.create "checkstyle${name.capitalize()}", Checkstyle
+    checkstyle.dependsOn variant.javaCompile
+    checkstyle.source variant.javaCompile.source
+    checkstyle.classpath = project.fileTree(variant.javaCompile.destinationDir)
+    checkstyle.exclude('**/BuildConfig.java')
+    checkstyle.exclude('**/R.java')
+    checkstyle.configFile = rootProject.file('checkstyle.xml')
+    checkstyle.showViolations = true
+    checkstyle.ignoreFailures = false
+    checkstyle.description = 'runs checkstyle on ' + name.capitalize() + ' build'
+    project.tasks.getByName("check").dependsOn checkstyle
+}
+
