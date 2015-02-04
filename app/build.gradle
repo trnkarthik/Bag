@@ -87,6 +87,14 @@ dependencies {
 }
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'myKey'
+            keyPassword 'trnkarthik44'
+            storeFile file('/Users/karthiktangirala/my-release-key.keystore')
+            storePassword 'trnkarthik44'
+        }
+    }
     compileSdkVersion 21
     buildToolsVersion "21.1.2"
     defaultConfig {
@@ -100,12 +108,10 @@ android {
         // + https://github.com/JakeWharton/double-espresso
         testInstrumentationRunner "com.google.android.apps.common.testing.testrunner.GoogleInstrumentationTestRunner"
     }
-
     lintOptions {
         abortOnError true
         warningsAsErrors true
     }
-
     buildTypes {
         release {
             minifyEnabled false
@@ -115,6 +121,7 @@ android {
             minifyEnabled false
             zipAlignEnabled true
             applicationIdSuffix ".debug"
+            signingConfig signingConfigs.config
         }
         packagingOptions {
             //TODO : Joda libraries contains duplicates.Take care of these later
@@ -131,7 +138,6 @@ android {
             exclude 'META_INF/services/javax.annotation.processing.Processor'
         }
     }
-
 }
 // Referred from https://github.com/f2prateek/android-couchpotato/blob/master/couchpotato/build.gradle
 android.applicationVariants.all { variant ->

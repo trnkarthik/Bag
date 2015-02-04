@@ -19,8 +19,7 @@ public class FTXSlideOneFragment extends BagBaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-//        ((BagApplication) getActivity().getApplication()).inject(this);
+
         return inflater.inflate(R.layout.fragment_ftxslide_one, container, false);
     }
 

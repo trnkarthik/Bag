@@ -2,11 +2,7 @@ package com.getmebag.bag.base;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.facebook.AppEventsLogger;
 import com.facebook.Session;
@@ -18,7 +14,7 @@ import javax.inject.Inject;
 /**
  * Created by karthiktangirala on 2/2/15.
  */
-public class FBBaseFragment extends BagBaseFragment{
+public class FBBaseFragment extends BagBaseFragment {
 
     private static final String TAG = "FBBaseFragment";
 
@@ -26,11 +22,6 @@ public class FBBaseFragment extends BagBaseFragment{
 
     @Inject
     public FBBaseFragment() {
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     @Override
@@ -71,7 +62,7 @@ public class FBBaseFragment extends BagBaseFragment{
 
         Session session = Session.getActiveSession();
         if (session != null &&
-                (session.isOpened() || session.isClosed()) ) {
+                (session.isOpened() || session.isClosed())) {
             onSessionStateChange(session, session.getState(), null);
         }
         uiHelper.onResume();
@@ -89,12 +80,10 @@ public class FBBaseFragment extends BagBaseFragment{
         }
     }
 
-
     @Override
     public void onPause() {
         super.onPause();
         uiHelper.onPause();
-
         // Logs 'app deactivate' App Event.
         AppEventsLogger.deactivateApp(getActivity());
     }

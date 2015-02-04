@@ -9,7 +9,7 @@ import android.widget.TextView;
 import com.facebook.model.GraphUser;
 import com.facebook.widget.LoginButton;
 import com.getmebag.bag.R;
-import com.getmebag.bag.base.BagBaseFragment;
+import com.getmebag.bag.base.FBBaseFragment;
 
 import java.util.Arrays;
 
@@ -18,7 +18,7 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class FTXSlideThreeFragment extends BagBaseFragment {
+public class FTXSlideThreeFragment extends FBBaseFragment {
 
     @InjectView(R.id.fb_login_button)
     LoginButton loginBtn;
