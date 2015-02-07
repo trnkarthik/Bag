@@ -2,6 +2,7 @@ package com.getmebag.bag.base;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 
 import com.facebook.AppEventsLogger;
@@ -14,7 +15,7 @@ import javax.inject.Inject;
 /**
  * Created by karthiktangirala on 2/2/15.
  */
-public class FBBaseFragment extends BagBaseFragment {
+public class FBBaseFragment extends Fragment {
 
     private static final String TAG = "FBBaseFragment";
 

@@ -9,7 +9,7 @@ import android.widget.TextView;
 import com.facebook.model.GraphUser;
 import com.facebook.widget.LoginButton;
 import com.getmebag.bag.R;
-import com.getmebag.bag.base.FBBaseFragment;
+import com.getmebag.bag.base.BagBaseFragment;
 
 import java.util.Arrays;
 
@@ -18,7 +18,7 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class FTXSlideThreeFragment extends FBBaseFragment {
+public class FTXSlideThreeFragment extends BagBaseFragment {
 
     @InjectView(R.id.fb_login_button)
     LoginButton loginBtn;
@@ -44,6 +44,7 @@ public class FTXSlideThreeFragment extends FBBaseFragment {
             @Override
             public void onUserInfoFetched(GraphUser user) {
                 if (user != null) {
+//                    user.
                     username.setText("You are currently logged in as " + user.getName());
                 } else {
                     username.setText("You are not logged in.");
