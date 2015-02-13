@@ -44,7 +44,6 @@ public class FTXSlideThreeFragment extends BagBaseFragment {
             @Override
             public void onUserInfoFetched(GraphUser user) {
                 if (user != null) {
-//                    user.
                     username.setText("You are currently logged in as " + user.getName());
                 } else {
                     username.setText("You are not logged in.");

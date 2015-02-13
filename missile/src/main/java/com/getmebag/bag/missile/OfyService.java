@@ -1,7 +1,7 @@
 package com.getmebag.bag.missile;
 
 import com.getmebag.bag.missile.Entities.Bag;
-import com.getmebag.bag.missile.Entities.Bagger;
+import com.getmebag.bag.missile.Entities.BagUser;
 import com.getmebag.bag.missile.Entities.Item;
 import com.getmebag.bag.missile.Entities.Quantity;
 import com.getmebag.bag.missile.Entities.Store;
@@ -19,7 +19,7 @@ public class OfyService {
 
     static {
         ObjectifyService.register(Bag.class);
-        ObjectifyService.register(Bagger.class);
+        ObjectifyService.register(BagUser.class);
         ObjectifyService.register(Item.class);
         ObjectifyService.register(Quantity.class);
         ObjectifyService.register(Store.class);

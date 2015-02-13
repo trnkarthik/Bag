@@ -8,7 +8,7 @@ import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 
 @Entity
-public class Bagger {
+public class BagUser {
 
     @Id
     long userId;
@@ -19,10 +19,10 @@ public class Bagger {
     GeoPt currentLocation;
     Ref<Bag> bag;
 
-    public Bagger() {
+    public BagUser() {
     }
 
-    public Bagger(long userId, User bagUser, String userName, Email emailId, GeoPt currentLocation) {
+    public BagUser(long userId, User bagUser, String userName, Email emailId, GeoPt currentLocation) {
         this.userId = userId;
         this.user = bagUser;
         this.userName = userName;

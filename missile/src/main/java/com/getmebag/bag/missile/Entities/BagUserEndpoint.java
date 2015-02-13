@@ -36,19 +36,19 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
                 packagePath = ""
         )
 )
-public class BaggerEndpoint {
+public class BagUserEndpoint {
 
-    private static final Logger logger = Logger.getLogger(BaggerEndpoint.class.getName());
+    private static final Logger logger = Logger.getLogger(BagUserEndpoint.class.getName());
 
     private static final int DEFAULT_LIST_LIMIT = 20;
 
     static {
         // Typically you would register this inside an OfyServive wrapper. See: https://code.google.com/p/objectify-appengine/wiki/BestPractices
-        ObjectifyService.register(Bagger.class);
+        ObjectifyService.register(BagUser.class);
     }
 
     /**
-     * Returns the {@link Bagger} with the corresponding ID.
+     * Returns the {@link BagUser} with the corresponding ID.
      *
      * @param userId the ID of the entity to be retrieved
      * @return the entity with the corresponding ID
@@ -58,13 +58,13 @@ public class BaggerEndpoint {
             name = "get",
             path = "bagger/{userId}",
             httpMethod = ApiMethod.HttpMethod.GET)
-    public Bagger get(@Named("userId") long userId) throws NotFoundException {
+    public BagUser get(@Named("userId") long userId) throws NotFoundException {
         logger.info("Getting Bagger with ID: " + userId);
-        Bagger bagger = ofy().load().type(Bagger.class).id(userId).now();
-        if (bagger == null) {
+        BagUser bagUser = ofy().load().type(BagUser.class).id(userId).now();
+        if (bagUser == null) {
             throw new NotFoundException("Could not find Bagger with ID: " + userId);
         }
-        return bagger;
+        return bagUser;
     }
 
     /**
@@ -74,23 +74,23 @@ public class BaggerEndpoint {
             name = "insert",
             path = "bagger",
             httpMethod = ApiMethod.HttpMethod.POST)
-    public Bagger insert(Bagger bagger) {
+    public BagUser insert(BagUser bagUser) {
         // Typically in a RESTful API a POST does not have a known ID (assuming the ID is used in the resource path).
         // You should validate that bagger.userId has not been set. If the ID type is not supported by the
         // Objectify ID generator, e.g. long or String, then you should generate the unique ID yourself prior to saving.
         //
         // If your client provides the ID then you should probably use PUT instead.
-        ofy().save().entity(bagger).now();
-        logger.info("Created Bagger with ID: " + bagger.getUserId());
+        ofy().save().entity(bagUser).now();
+        logger.info("Created Bagger with ID: " + bagUser.getUserId());
 
-        return ofy().load().entity(bagger).now();
+        return ofy().load().entity(bagUser).now();
     }
 
     /**
      * Updates an existing {@code Bagger}.
      *
      * @param userId the ID of the entity to be updated
-     * @param bagger the desired state of the entity
+     * @param bagUser the desired state of the entity
      * @return the updated version of the entity
      * @throws NotFoundException if the {@code userId} does not correspond to an existing
      *                           {@code Bagger}
@@ -99,12 +99,12 @@ public class BaggerEndpoint {
             name = "update",
             path = "bagger/{userId}",
             httpMethod = ApiMethod.HttpMethod.PUT)
-    public Bagger update(@Named("userId") long userId, Bagger bagger) throws NotFoundException {
+    public BagUser update(@Named("userId") long userId, BagUser bagUser) throws NotFoundException {
         // TODO: You should validate your ID parameter against your resource's ID here.
         checkExists(userId);
-        ofy().save().entity(bagger).now();
-        logger.info("Updated Bagger: " + bagger);
-        return ofy().load().entity(bagger).now();
+        ofy().save().entity(bagUser).now();
+        logger.info("Updated Bagger: " + bagUser);
+        return ofy().load().entity(bagUser).now();
     }
 
     /**
@@ -120,7 +120,7 @@ public class BaggerEndpoint {
             httpMethod = ApiMethod.HttpMethod.DELETE)
     public void remove(@Named("userId") long userId) throws NotFoundException {
         checkExists(userId);
-        ofy().delete().type(Bagger.class).id(userId).now();
+        ofy().delete().type(BagUser.class).id(userId).now();
         logger.info("Deleted Bagger with ID: " + userId);
     }
 
@@ -135,23 +135,23 @@ public class BaggerEndpoint {
             name = "list",
             path = "bagger",
             httpMethod = ApiMethod.HttpMethod.GET)
-    public CollectionResponse<Bagger> list(@Nullable @Named("cursor") String cursor, @Nullable @Named("limit") Integer limit) {
+    public CollectionResponse<BagUser> list(@Nullable @Named("cursor") String cursor, @Nullable @Named("limit") Integer limit) {
         limit = limit == null ? DEFAULT_LIST_LIMIT : limit;
-        Query<Bagger> query = ofy().load().type(Bagger.class).limit(limit);
+        Query<BagUser> query = ofy().load().type(BagUser.class).limit(limit);
         if (cursor != null) {
             query = query.startAt(Cursor.fromWebSafeString(cursor));
         }
-        QueryResultIterator<Bagger> queryIterator = query.iterator();
-        List<Bagger> baggerList = new ArrayList<Bagger>(limit);
+        QueryResultIterator<BagUser> queryIterator = query.iterator();
+        List<BagUser> bagUserList = new ArrayList<BagUser>(limit);
         while (queryIterator.hasNext()) {
-            baggerList.add(queryIterator.next());
+            bagUserList.add(queryIterator.next());
         }
-        return CollectionResponse.<Bagger>builder().setItems(baggerList).setNextPageToken(queryIterator.getCursor().toWebSafeString()).build();
+        return CollectionResponse.<BagUser>builder().setItems(bagUserList).setNextPageToken(queryIterator.getCursor().toWebSafeString()).build();
     }
 
     private void checkExists(long userId) throws NotFoundException {
         try {
-            ofy().load().type(Bagger.class).id(userId).safe();
+            ofy().load().type(BagUser.class).id(userId).safe();
         } catch (com.googlecode.objectify.NotFoundException e) {
             throw new NotFoundException("Could not find Bagger with ID: " + userId);
         }
