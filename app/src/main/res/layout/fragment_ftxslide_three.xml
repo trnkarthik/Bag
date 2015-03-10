@@ -14,11 +14,4 @@
         android:gravity="center"
         android:text="Tutorial screen 3" />
 
-    <com.facebook.widget.LoginButton
-        android:id="@+id/fb_login_button"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        facebook:confirm_logout="false"
-        facebook:fetch_user_info="true" />
-
 </LinearLayout>

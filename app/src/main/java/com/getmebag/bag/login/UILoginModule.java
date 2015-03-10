@@ -12,6 +12,8 @@ import dagger.Module;
                 AndroidModule.class,
         },
         injects = {
+                LoginActivity.class,
+                LoginFragment.class,
         },
         complete = false
 )

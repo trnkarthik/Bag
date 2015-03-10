@@ -34,6 +34,7 @@ public class FTXTutorialFragment extends BagBaseFragment {
     public FTXTutorialFragment() {
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

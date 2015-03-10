@@ -1,5 +1,7 @@
 package com.getmebag.bag.ftx;
 
+import com.getmebag.bag.MainActivity;
+
 import dagger.Module;
 
 /**
@@ -12,6 +14,7 @@ import dagger.Module;
                 FTXSlideOneFragment.class,
                 FTXSlideTwoFragment.class,
                 FTXSlideThreeFragment.class,
+                MainActivity.class,
         },
         complete = false
 )

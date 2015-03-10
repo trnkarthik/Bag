@@ -1,5 +1,6 @@
 package com.getmebag.bag.base;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -11,7 +12,7 @@ import javax.inject.Inject;
 /**
  * Created by karthiktangirala on 1/2/15.
  */
-public class BagBaseActivity extends FragmentActivity {
+public class BagAuthBaseActivity extends FragmentActivity {
 
     @Inject
     BagBaseFragment bagBaseFragment;
@@ -37,4 +38,13 @@ public class BagBaseActivity extends FragmentActivity {
                     .commit();
         }
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (bagBaseFragment != null) {
+            bagBaseFragment.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
 }

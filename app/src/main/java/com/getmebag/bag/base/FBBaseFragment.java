@@ -37,11 +37,7 @@ public class FBBaseFragment extends Fragment {
         @Override
         public void call(Session session, SessionState state,
                          Exception exception) {
-            if (state.isOpened()) {
-                Log.d(TAG, "Facebook session opened.");
-            } else if (state.isClosed()) {
-                Log.d(TAG, "Facebook session closed.");
-            }
+            onFacebookSessionStateChange(session, session.getState(), null);
         }
     };
 
@@ -64,7 +60,7 @@ public class FBBaseFragment extends Fragment {
         Session session = Session.getActiveSession();
         if (session != null &&
                 (session.isOpened() || session.isClosed())) {
-            onSessionStateChange(session, session.getState(), null);
+            onFacebookSessionStateChange(session, session.getState(), null);
         }
         uiHelper.onResume();
 
@@ -72,7 +68,7 @@ public class FBBaseFragment extends Fragment {
         AppEventsLogger.activateApp(getActivity());
     }
 
-    private void onSessionStateChange(Session session, SessionState state,
+    public void onFacebookSessionStateChange(Session session, SessionState state,
                                       Exception exception) {
         if (state.isOpened()) {
             Log.i(TAG, "Logged in...");
@@ -94,5 +90,7 @@ public class FBBaseFragment extends Fragment {
         super.onDestroy();
         uiHelper.onDestroy();
     }
+
+
 
 }

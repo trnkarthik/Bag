@@ -2,15 +2,16 @@ package com.getmebag.bag;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.getmebag.bag.base.BagAuthBaseActivity;
 
-public class MainActivity extends ActionBarActivity {
+
+public class MainActivity extends BagAuthBaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

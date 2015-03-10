@@ -52,7 +52,7 @@ dependencies {
         exclude group: 'com.squareup.dagger'
         exclude group: 'com.android.support'
     }
-    compile project(path: ':missile', configuration: 'android-endpoints')
+//    compile project(path: ':missile', configuration: 'android-endpoints')
     compile('com.viewpagerindicator:library:2.4.1') {
         exclude module: 'support-v4'
     }
@@ -82,7 +82,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:21.0.3'
     compile 'com.android.support:support-v13:21.0.3'
     compile 'com.google.android.gms:play-services-plus:6.5.87'
-    //    compile 'com.google.android.gms:play-services:6.5.87'
+//  compile 'com.google.android.gms:play-services:6.5.87'
     compile 'com.facebook.android:facebook-android-sdk:3.21.1'
 }
 

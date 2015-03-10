@@ -38,18 +38,17 @@ public class AndroidModule {
     @Singleton
     public GoogleApiClient provideGoogleApiClient(@ForApplication Context appContext) {
         return new GoogleApiClient.Builder(appContext)
-                .addApi(Plus.API)
-                .addScope(Plus.SCOPE_PLUS_LOGIN)
+                .addApi(Plus.API, Plus.PlusOptions.builder().build())
+                .addScope(Plus.SCOPE_PLUS_PROFILE)
                 .build();
-//        return new GoogleApiClient.Builder(this)
-//                .addConnectionCallbacks(this)
-//                .addOnConnectionFailedListener(this)
-//                .addApi(Plus.API, Plus.PlusOptions.builder().build())
-//                .addScope(Plus.SCOPE_PLUS_LOGIN)
-//                .build();
     }
 
 /*
+    @Provides @Singleton
+    SharedPreferences provideSharedPreferences(Application app) {
+        return app.getSharedPreferences("u2020", MODE_PRIVATE);
+    }
+
     Not needed for now.This is how we should 'PROVIDE' android services
     @Provides @Singleton
     LocationManager provideLocationManager() {
