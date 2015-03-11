@@ -6,19 +6,24 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.getmebag.bag.R;
 import com.getmebag.bag.base.BagBaseFragment;
+import com.getmebag.bag.login.LoginActivity;
 import com.viewpagerindicator.CirclePageIndicator;
 
 import java.util.ArrayList;
 
 import javax.inject.Inject;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 /**
  * A placeholder fragment containing a simple view.
  */
-public class FTXTutorialFragment extends BagBaseFragment {
+public class FTXTutorialFragment extends BagBaseFragment implements View.OnClickListener {
 
     //Fragments to be added to the viewPager
     @Inject FTXSlideOneFragment ftxSlideOneFragment;
@@ -31,6 +36,12 @@ public class FTXTutorialFragment extends BagBaseFragment {
 
     ArrayList<Fragment> ftxTutorialPageDetails;
 
+    @InjectView(R.id.ftx_sign_up)
+    Button ftxSignUp;
+
+    @InjectView(R.id.ftx_log_in)
+    Button ftxLogIn;
+
     public FTXTutorialFragment() {
     }
 
@@ -39,6 +50,12 @@ public class FTXTutorialFragment extends BagBaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_ftxtutorial, container, false);
+
+        ButterKnife.inject(this, rootView);
+
+        //setUp buttons
+        ftxSignUp.setOnClickListener(this);
+        ftxLogIn.setOnClickListener(this);
 
         initializePageDetails();
         setUpPageAdapter();
@@ -71,4 +88,9 @@ public class FTXTutorialFragment extends BagBaseFragment {
         ftxTutorialPageDetails.add(ftxSlideThreeFragment);
     }
 
+    @Override
+    public void onClick(View v) {
+        startActivity(LoginActivity.intent(getActivity()));
+        getActivity().finish();
+    }
 }

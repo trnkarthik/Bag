@@ -1,6 +1,7 @@
 package com.getmebag.bag.login;
 
 import com.getmebag.bag.androidspecific.AndroidModule;
+import com.getmebag.bag.ftx.UIFTXModule;
 
 import dagger.Module;
 
@@ -10,6 +11,7 @@ import dagger.Module;
 @Module(
         includes = {
                 AndroidModule.class,
+                UIFTXModule.class,
         },
         injects = {
                 LoginActivity.class,

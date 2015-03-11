@@ -1,5 +1,7 @@
 package com.getmebag.bag.ftx;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
@@ -9,6 +11,10 @@ import com.getmebag.bag.base.BagBaseActivity;
 public class FTXTutorialActivity extends BagBaseActivity {
 
     Fragment ftxTutorialFragment;
+
+    public static Intent intent(Context context) {
+        return new Intent(context, FTXTutorialActivity.class);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

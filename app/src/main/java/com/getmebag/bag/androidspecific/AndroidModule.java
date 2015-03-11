@@ -1,16 +1,20 @@
 package com.getmebag.bag.androidspecific;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import com.getmebag.bag.annotations.ForApplication;
 import com.getmebag.bag.app.BagApplication;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by karthiktangirala on 1/2/15.
@@ -19,6 +23,7 @@ import dagger.Provides;
 public class AndroidModule {
     private final BagApplication application;
 
+    @Inject
     public AndroidModule(BagApplication application) {
         this.application = application;
     }
@@ -43,12 +48,12 @@ public class AndroidModule {
                 .build();
     }
 
-/*
     @Provides @Singleton
-    SharedPreferences provideSharedPreferences(Application app) {
-        return app.getSharedPreferences("u2020", MODE_PRIVATE);
+    public SharedPreferences provideSharedPreferences(@ForApplication Context app) {
+        return app.getSharedPreferences("bag", MODE_PRIVATE);
     }
 
+/*
     Not needed for now.This is how we should 'PROVIDE' android services
     @Provides @Singleton
     LocationManager provideLocationManager() {

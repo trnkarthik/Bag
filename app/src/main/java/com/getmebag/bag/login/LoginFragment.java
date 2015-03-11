@@ -1,6 +1,5 @@
 package com.getmebag.bag.login;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,7 +11,6 @@ import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.model.GraphUser;
 import com.facebook.widget.LoginButton;
-import com.getmebag.bag.MainActivity;
 import com.getmebag.bag.R;
 import com.getmebag.bag.base.BagAuthBaseFragment;
 import com.google.android.gms.common.SignInButton;
@@ -31,7 +29,7 @@ public class LoginFragment extends BagAuthBaseFragment {
 
     @InjectView(R.id.fb_login_button)
     LoginButton loginBtn;
-    @InjectView(R.id.sign_in_button)
+    @InjectView(R.id.gplus_sign_in_button)
     SignInButton signInButton;
     @InjectView(R.id.username)
     TextView username;
@@ -86,7 +84,7 @@ public class LoginFragment extends BagAuthBaseFragment {
                 if (!googleApiClient.isConnected()) {
                     if (!googleApiClient.isConnecting()) {
                         switch (v.getId()) {
-                            case R.id.sign_in_button:
+                            case R.id.gplus_sign_in_button:
                                 username.setText("Signing In...");
                                 resolveSignInError();
                                 break;
@@ -103,7 +101,7 @@ public class LoginFragment extends BagAuthBaseFragment {
 //        Person currentUser = Plus.PeopleApi.getCurrentPerson(googleApiClient);
         String currentUser = Plus.AccountApi.getAccountName(googleApiClient);
         username.setText("Logged in as : " + currentUser);
-        getActivity().startActivity(new Intent(getActivity(), MainActivity.class));
+//        getActivity().startActivity(new Intent(getActivity(), MainActivity.class));
     }
 
     @Override
@@ -111,7 +109,7 @@ public class LoginFragment extends BagAuthBaseFragment {
         if (state.isOpened()) {
             Log.i(TAG, "Logged in...");
             //TODO : Get Profile Info and do some FireBase stuff
-            getActivity().startActivity(new Intent(getActivity(), MainActivity.class));
+//            getActivity().startActivity(new Intent(getActivity(), MainActivity.class));
         } else if (state.isClosed()) {
             Log.i(TAG, "Logged out...");
         }
