@@ -14,6 +14,8 @@ import dagger.Module;
         injects = {
                 BagBaseActivity.class,
                 BagBaseFragment.class,
+                BagAuthBaseActivity.class,
+                BagAuthBaseFragment.class,
                 FBBaseFragment.class,
         },
         complete = false

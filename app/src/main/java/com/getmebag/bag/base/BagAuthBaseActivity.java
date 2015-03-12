@@ -15,7 +15,8 @@ import javax.inject.Inject;
 public class BagAuthBaseActivity extends FragmentActivity {
 
     @Inject
-    BagBaseFragment bagBaseFragment;
+    public
+    BagAuthBaseFragment bagAuthBaseFragment;
 
     /**
      * Created by karthiktangirala on 9/30/14.
@@ -27,7 +28,7 @@ public class BagAuthBaseActivity extends FragmentActivity {
         //Injecting fragment to object graph
         ((BagApplication) getApplication()).inject(this);
 
-        addFragmentToContentView(savedInstanceState, 0, bagBaseFragment);
+        addFragmentToContentView(savedInstanceState, 0, bagAuthBaseFragment);
     }
 
     public void addFragmentToContentView(Bundle savedInstanceState, int containerId,
@@ -42,8 +43,8 @@ public class BagAuthBaseActivity extends FragmentActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (bagBaseFragment != null) {
-            bagBaseFragment.onActivityResult(requestCode, resultCode, data);
+        if (bagAuthBaseFragment != null) {
+            bagAuthBaseFragment.onActivityResult(requestCode, resultCode, data);
         }
     }
 

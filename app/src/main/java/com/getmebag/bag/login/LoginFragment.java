@@ -102,6 +102,8 @@ public class LoginFragment extends BagAuthBaseFragment {
         String currentUser = Plus.AccountApi.getAccountName(googleApiClient);
         username.setText("Logged in as : " + currentUser);
 //        getActivity().startActivity(new Intent(getActivity(), MainActivity.class));
+//        startActivity(MainActivity.intent(getActivity()));
+//        getActivity().finish();
     }
 
     @Override
@@ -110,6 +112,8 @@ public class LoginFragment extends BagAuthBaseFragment {
             Log.i(TAG, "Logged in...");
             //TODO : Get Profile Info and do some FireBase stuff
 //            getActivity().startActivity(new Intent(getActivity(), MainActivity.class));
+//            startActivity(MainActivity.intent(getActivity()));
+//            getActivity().finish();
         } else if (state.isClosed()) {
             Log.i(TAG, "Logged out...");
         }
