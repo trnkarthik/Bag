@@ -38,7 +38,7 @@ public class UIFTXModule {
     @Singleton
     @IsThisFirstTimeUse
     BooleanPreference isThisFirstTimeUse(SharedPreferences preferences) {
-        return new BooleanPreference(preferences, "bsg_is_this_first_time_use", true);
+        return new BooleanPreference(preferences, "bag_is_this_first_time_use", true);
     }
 
 }

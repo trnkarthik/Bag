@@ -1,5 +1,6 @@
 package com.getmebag.bag.ftx;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -8,7 +9,6 @@ import com.getmebag.bag.R;
 import com.getmebag.bag.androidspecific.prefs.BooleanPreference;
 import com.getmebag.bag.annotations.IsThisFirstTimeUse;
 import com.getmebag.bag.app.BagApplication;
-import com.getmebag.bag.base.BagAuthBaseActivity;
 import com.getmebag.bag.login.LoginActivity;
 
 import javax.inject.Inject;
@@ -16,7 +16,7 @@ import javax.inject.Inject;
 /**
  * Created by karthiktangirala on 3/10/15.
  */
-public class InitialControllerActivity extends BagAuthBaseActivity {
+public class InitialControllerActivity extends Activity {
 
     @Inject @IsThisFirstTimeUse
     BooleanPreference isThisFirstTimeUse;
@@ -30,15 +30,19 @@ public class InitialControllerActivity extends BagAuthBaseActivity {
 
         if (isThisFirstTimeUse.get()) {
             showFTX();
-        } else if (isUserLoggedIn()) {
+        } else if (hasLoggedInUserInfo()) {
             showMainPage();
         } else {
             showLogin();
         }
     }
 
-    private boolean isUserLoggedIn() {
-        return false; // for now
+    private boolean hasLoggedInUserInfo() {
+        /*
+        * See Session.openActiveSessionWithAccessToken(Context, AccessToken, StatusCallback)
+        * for facebook
+        * */
+         return false; // for now
     }
 
     private void showFTX() {

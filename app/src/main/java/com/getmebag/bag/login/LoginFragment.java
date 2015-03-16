@@ -12,6 +12,8 @@ import com.facebook.SessionState;
 import com.facebook.model.GraphUser;
 import com.facebook.widget.LoginButton;
 import com.getmebag.bag.R;
+import com.getmebag.bag.androidspecific.prefs.StringPreference;
+import com.getmebag.bag.annotations.CurrentAuthProvider;
 import com.getmebag.bag.base.BagAuthBaseFragment;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.plus.Plus;
@@ -33,6 +35,9 @@ public class LoginFragment extends BagAuthBaseFragment {
     SignInButton signInButton;
     @InjectView(R.id.username)
     TextView username;
+
+    @Inject @CurrentAuthProvider
+    StringPreference currentAuthProvider;
 
     @Inject
     public LoginFragment() {
@@ -101,6 +106,7 @@ public class LoginFragment extends BagAuthBaseFragment {
 //        Person currentUser = Plus.PeopleApi.getCurrentPerson(googleApiClient);
         String currentUser = Plus.AccountApi.getAccountName(googleApiClient);
         username.setText("Logged in as : " + currentUser);
+        currentAuthProvider.set("google"); // for now
 //        getActivity().startActivity(new Intent(getActivity(), MainActivity.class));
 //        startActivity(MainActivity.intent(getActivity()));
 //        getActivity().finish();
@@ -114,8 +120,10 @@ public class LoginFragment extends BagAuthBaseFragment {
 //            getActivity().startActivity(new Intent(getActivity(), MainActivity.class));
 //            startActivity(MainActivity.intent(getActivity()));
 //            getActivity().finish();
+            currentAuthProvider.set("fb"); // for now
         } else if (state.isClosed()) {
             Log.i(TAG, "Logged out...");
+            currentAuthProvider.set(null); // for now
         }
     }
 
