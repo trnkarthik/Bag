@@ -39,4 +39,12 @@ public class LoginActivity extends BagAuthBaseActivity {
         isThisFirstTimeUse.set(false);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (loginFragment != null) {
+            loginFragment.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
 }

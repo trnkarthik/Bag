@@ -9,26 +9,26 @@
     <TextView
         android:id="@+id/username"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="100dp"
         android:layout_weight="1"
         android:gravity="center"
         android:text="Tutorial screen 3" />
-
-    <com.google.android.gms.common.SignInButton
-        android:id="@+id/gplus_sign_in_button"
-        android:layout_width="fill_parent"
-        android:layout_height="60dp"
-        android:layout_margin="4dp"
-        android:enabled="false" />
 
     <com.facebook.widget.LoginButton
         android:id="@+id/fb_login_button"
         android:layout_width="fill_parent"
         android:layout_height="60dp"
-        android:layout_marginBottom="4dp"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
+        android:layout_margin="@dimen/common_half_margin"
         facebook:confirm_logout="false"
+        android:layout_weight="0"
         facebook:fetch_user_info="true" />
+
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/gplus_sign_in_button"
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        android:layout_weight="0"
+        android:layout_margin="@dimen/common_quarter_margin"
+        android:enabled="false" />
 
 </LinearLayout>

@@ -7,9 +7,9 @@ import javax.inject.Qualifier;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Created by karthiktangirala on 3/15/15.
+ * Created by karthiktangirala on 3/28/15.
  */
 @Qualifier
 @Retention(RUNTIME)
-public @interface CurrentAuthProvider {
+public @interface FireBaseUsersRef {
 }

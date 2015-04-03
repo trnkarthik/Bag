@@ -1,22 +1,30 @@
 package com.getmebag.bag.base;
 
-import android.app.Activity;
-import android.app.PendingIntent;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
-import com.facebook.AppEventsLogger;
 import com.facebook.Session;
 import com.facebook.SessionState;
-import com.facebook.UiLifecycleHelper;
+import com.firebase.client.AuthData;
+import com.firebase.client.Firebase;
+import com.getmebag.bag.MainActivity;
+import com.getmebag.bag.annotations.FireBaseUsersRef;
+import com.getmebag.bag.annotations.MainFireBaseRef;
 import com.getmebag.bag.app.BagApplication;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.inject.Inject;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * Created by karthiktangirala on 1/2/15.
@@ -25,35 +33,38 @@ public class BagAuthBaseFragment extends Fragment implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
-    private static final String TAG = "BagBaseFragment";
+    private static final String TAG = MainActivity.class.getSimpleName();
 
-    //FaceBook
-    protected UiLifecycleHelper uiHelper;
-
-    //gplus
-    public static final int STATE_DEFAULT = 0;
-    public static final int STATE_SIGN_IN = 1;
-    public static final int STATE_IN_PROGRESS = 2;
-
-    public static final int RC_SIGN_IN = 0;
-
-    public static final int DIALOG_PLAY_SERVICES_ERROR = 0;
-
-    public static final String SAVED_PROGRESS = "gplus_sign_in_progress";
-
-    public int signInProgress;
-
-    public PendingIntent signInIntent;
-
-    public int signInError;
+    public ProgressDialog progressDialog;
 
     @Inject
-    public
-    GoogleApiClient googleApiClient;
+    @MainFireBaseRef
+    public Firebase mainFirebaseRef;
 
     @Inject
-    public BagAuthBaseFragment() {
-    }
+    @FireBaseUsersRef
+    public Firebase firebaseUsersRef;
+
+    /* Data from the authenticated user */
+    public AuthData authData;
+
+    /* Request code used to invoke sign in user interactions for Google+ */
+    public static final int RC_GOOGLE_LOGIN = 1;
+
+    /* Client used to interact with Google APIs. */
+    @Inject
+    public GoogleApiClient googleApiClient;
+
+    /* A flag indicating that a PendingIntent is in progress and prevents us from starting further intents. */
+    public boolean googleIntentInProgress;
+
+    /* Track whether the sign-in button has been clicked so that we know to resolve all issues preventing sign-in
+     * without waiting. */
+    public boolean googleLoginClicked;
+
+    /* Store the connection result from onConnectionFailed callbacks so that we can resolve them when the user clicks
+     * sign-in. */
+    public ConnectionResult googleConnectionResult;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -62,170 +73,96 @@ public class BagAuthBaseFragment extends Fragment implements
         //Injecting fragment to object graph
         ((BagApplication) getActivity().getApplication()).inject(this);
 
-        //FaceBook
-        uiHelper = new UiLifecycleHelper(getActivity(), statusCallback);
-        uiHelper.onCreate(savedInstanceState);
-
-        //gplus
-        if (savedInstanceState != null) {
-            signInProgress = savedInstanceState.getInt(SAVED_PROGRESS, STATE_DEFAULT);
-        }
-
     }
 
-    //FaceBook
-    private Session.StatusCallback statusCallback = new Session.StatusCallback() {
-        @Override
-        public void call(Session session, SessionState state,
-                         Exception exception) {
-            onFacebookSessionStateChange(session, session.getState(), null);
-        }
-    };
+    /**
+     * Show errors to users
+     */
+    public void showErrorDialog(String message) {
+        new AlertDialog.Builder(getActivity())
+                .setTitle("Error")
+                .setMessage(message)
+                .setPositiveButton(android.R.string.ok, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
 
-    public void onFacebookSessionStateChange(Session session, SessionState state,
-                                             Exception exception) {
+    /* Handle any changes to the Facebook session */
+    public void onFacebookSessionStateChange(Session session, SessionState state, Exception exception) {
         if (state.isOpened()) {
             Log.i(TAG, "Logged in...");
-            //TODO : Get Profile Info and do some FireBase stuff
-//            getActivity().startActivity(new Intent(getActivity(), MainActivity.class));
         } else if (state.isClosed()) {
             Log.i(TAG, "Logged out...");
-            //TODO : Redirect user to Login Activity.
-//            getActivity().startActivity(new Intent(getActivity(), FTXTutorialActivity.class));
         }
+    }
+
+    /* A helper method to resolve the current ConnectionResult error. */
+    public void resolveSignInError() {
+        if (googleConnectionResult.hasResolution()) {
+            try {
+                googleIntentInProgress = true;
+                googleConnectionResult.startResolutionForResult(getActivity(), RC_GOOGLE_LOGIN);
+            } catch (IntentSender.SendIntentException e) {
+                // The intent was canceled before it was sent.  Return to the default
+                // state and attempt to connect to get an updated ConnectionResult.
+                googleIntentInProgress = false;
+                googleApiClient.connect();
+            }
+        }
+    }
+
+    @Override
+    public void onConnected(final Bundle bundle) {
+        /* Connected with Google API, use this to authenticate with Firebase */
+    }
+
+
+    @Override
+    public void onConnectionFailed(ConnectionResult result) {
+        if (!googleIntentInProgress) {
+            /* Store the ConnectionResult so that we can use it later when the user clicks on the Google+ login button */
+            googleConnectionResult = result;
+
+            if (googleLoginClicked) {
+                /* The user has already clicked login so we attempt to resolve all errors until the user is signed in,
+                 * or they cancel. */
+                resolveSignInError();
+            } else {
+                Log.e(TAG, result.toString());
+            }
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        // ignore
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
-        Session session = Session.getActiveSession();
-        if (session != null &&
-                (session.isOpened() || session.isClosed())) {
-            onFacebookSessionStateChange(session, session.getState(), null);
+        if (!googleApiClient.isConnected() && !googleApiClient.isConnecting()) {
+            googleApiClient.connect();
         }
-        uiHelper.onResume();
-
-        // Logs 'install' and 'app activate' App Events.
-        AppEventsLogger.activateApp(getActivity());
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        uiHelper.onPause();
-        // Logs 'app deactivate' App Event.
-        AppEventsLogger.deactivateApp(getActivity());
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        uiHelper.onDestroy();
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        uiHelper.onSaveInstanceState(outState);
-        outState.putInt(SAVED_PROGRESS, signInProgress);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        uiHelper.onActivityResult(requestCode, resultCode, data);  //fb
-        googleSignInOnActivityResult(requestCode, resultCode);     //gplus
-    }
-
-    public void googleSignInOnActivityResult(int requestCode, int resultCode) {
-        switch (requestCode) {
-            case RC_SIGN_IN:
-                if (resultCode == Activity.RESULT_OK) {
-                    signInProgress = STATE_SIGN_IN;
-                } else {
-                    signInProgress = STATE_DEFAULT;
-                }
-
-                if (!googleApiClient.isConnecting()) {
-                    googleApiClient.connect();
-                }
-                break;
-        }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        googleApiClient.connect();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        if (googleApiClient.isConnected()) {
-            googleApiClient.disconnect();
-        }
-    }
-
-    public void resolveSignInError() {
-        if (signInIntent != null) {
-            try {
-                signInProgress = STATE_IN_PROGRESS;
-                getActivity().startIntentSenderForResult(signInIntent.getIntentSender(),
-                        RC_SIGN_IN, null, 0, 0, 0);
-            } catch (IntentSender.SendIntentException e) {
-                Log.i(TAG, "Sign in intent could not be sent: "
-                        + e.getLocalizedMessage());
-                signInProgress = STATE_SIGN_IN;
+        Map<String, String> options = new HashMap<String, String>();
+        if (requestCode == RC_GOOGLE_LOGIN) {
+            /* This was a request by the Google API */
+            if (resultCode != RESULT_OK) {
+                googleLoginClicked = false;
+            }
+            googleIntentInProgress = false;
+            if (!googleApiClient.isConnecting()) {
                 googleApiClient.connect();
             }
         } else {
-           //showDialog(DIALOG_PLAY_SERVICES_ERROR);
-           //TODO : Show Goolge Play Services Dialog.
+            /* Otherwise, it's probably the request by the Facebook login button, keep track of the session */
+            Session.getActiveSession().onActivityResult(getActivity(), requestCode, resultCode, data);
         }
-    }
-
-    @Override
-    public void onConnected(Bundle connectionHint) {
-        // Reaching onConnected means we consider the user signed in.
-        Log.i(TAG, "onConnected");
-        // Indicate that the sign in process is complete.
-        signInProgress = STATE_DEFAULT;
-    }
-
-    @Override
-    public void onConnectionSuspended(int cause) {
-        googleApiClient.connect();
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult result) {
-        Log.i(TAG, "onConnectionFailed: ConnectionResult.getErrorCode() = "
-                + result.getErrorCode());
-
-        if (result.getErrorCode() == ConnectionResult.API_UNAVAILABLE) {
-            // An API requested for GoogleApiClient is not available. You may need to use a
-            // second GoogleApiClient to manage the application's optional APIs.
-            //TODO : SNR Dialog
-        } else if (signInProgress != STATE_IN_PROGRESS) {
-            signInIntent = result.getResolution();
-            signInError = result.getErrorCode();
-
-            if (signInProgress == STATE_SIGN_IN) {
-                resolveSignInError();
-            }
-        }
-        // In this sample we consider the user signed out whenever they do not have
-        // a connection to Google Play services.
-        onSignedOut();
-    }
-
-    public void onSignedOut() {
-        // Update the UI to reflect that the user is signed out.
-        //TODO : Reirect to Login Activity
-//        getActivity().startActivity(new Intent(getActivity(), FTXTutorialActivity.class));
     }
 
 }

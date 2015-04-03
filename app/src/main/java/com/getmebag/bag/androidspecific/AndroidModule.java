@@ -3,7 +3,11 @@ package com.getmebag.bag.androidspecific;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.firebase.client.Firebase;
+import com.getmebag.bag.R;
+import com.getmebag.bag.annotations.FireBaseUsersRef;
 import com.getmebag.bag.annotations.ForApplication;
+import com.getmebag.bag.annotations.MainFireBaseRef;
 import com.getmebag.bag.app.BagApplication;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
@@ -43,7 +47,7 @@ public class AndroidModule {
     @Singleton
     public GoogleApiClient provideGoogleApiClient(@ForApplication Context appContext) {
         return new GoogleApiClient.Builder(appContext)
-                .addApi(Plus.API, Plus.PlusOptions.builder().build())
+                .addApi(Plus.API)
                 .addScope(Plus.SCOPE_PLUS_PROFILE)
                 .build();
     }
@@ -51,6 +55,16 @@ public class AndroidModule {
     @Provides @Singleton
     public SharedPreferences provideSharedPreferences(@ForApplication Context app) {
         return app.getSharedPreferences("bag", MODE_PRIVATE);
+    }
+
+    @Provides @Singleton @MainFireBaseRef
+    public Firebase provideMainFireBaseRef(@ForApplication Context app) {
+        return new Firebase(app.getString(R.string.main_firebase_url));
+    }
+
+    @Provides @Singleton @FireBaseUsersRef
+    public Firebase provideFireBaseUsersRef(@ForApplication Context app) {
+        return new Firebase(app.getString(R.string.firebase_users_url));
     }
 
 /*

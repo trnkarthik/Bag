@@ -2,6 +2,7 @@ package com.getmebag.bag.app;
 
 import android.app.Application;
 
+import com.firebase.client.Firebase;
 import com.getmebag.bag.androidspecific.AndroidModule;
 import com.getmebag.bag.base.UIBaseModule;
 import com.getmebag.bag.ftx.UIFTXModule;
@@ -21,6 +22,8 @@ public class BagApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        Firebase.setAndroidContext(this);
 
         graph = ObjectGraph.create(getModules().toArray());
     }
