@@ -5,10 +5,14 @@ import android.content.SharedPreferences;
 
 import com.firebase.client.Firebase;
 import com.getmebag.bag.R;
+import com.getmebag.bag.androidspecific.prefs.CustomObjectPreference;
+import com.getmebag.bag.annotations.CurrentUser;
+import com.getmebag.bag.annotations.CurrentUserPreference;
 import com.getmebag.bag.annotations.FireBaseUsersRef;
 import com.getmebag.bag.annotations.ForApplication;
 import com.getmebag.bag.annotations.MainFireBaseRef;
 import com.getmebag.bag.app.BagApplication;
+import com.getmebag.bag.model.BagUser;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 
@@ -66,6 +70,21 @@ public class AndroidModule {
     public Firebase provideFireBaseUsersRef(@ForApplication Context app) {
         return new Firebase(app.getString(R.string.firebase_users_url));
     }
+
+    @Provides
+    @Singleton
+    @CurrentUserPreference
+    CustomObjectPreference<BagUser> currentUserPreference(SharedPreferences preferences) {
+        return new CustomObjectPreference<>(preferences, "bag_current_user", null);
+    }
+
+    @Provides
+    @Singleton
+    @CurrentUser
+    BagUser currentUser(@CurrentUserPreference CustomObjectPreference<BagUser> customObjectPreference) {
+        return (BagUser) customObjectPreference.get(BagUser.class);
+    }
+
 
 /*
     Not needed for now.This is how we should 'PROVIDE' android services

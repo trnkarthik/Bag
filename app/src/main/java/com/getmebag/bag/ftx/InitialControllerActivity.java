@@ -7,9 +7,11 @@ import android.os.Bundle;
 import com.getmebag.bag.MainActivity;
 import com.getmebag.bag.R;
 import com.getmebag.bag.androidspecific.prefs.BooleanPreference;
+import com.getmebag.bag.annotations.CurrentUser;
 import com.getmebag.bag.annotations.IsThisFirstTimeUse;
 import com.getmebag.bag.app.BagApplication;
 import com.getmebag.bag.login.LoginActivity;
+import com.getmebag.bag.model.BagUser;
 
 import javax.inject.Inject;
 
@@ -20,6 +22,9 @@ public class InitialControllerActivity extends Activity {
 
     @Inject @IsThisFirstTimeUse
     BooleanPreference isThisFirstTimeUse;
+
+    @Inject @CurrentUser
+    BagUser currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,11 +43,7 @@ public class InitialControllerActivity extends Activity {
     }
 
     private boolean hasLoggedInUserInfo() {
-        /*
-        * See Session.openActiveSessionWithAccessToken(Context, AccessToken, StatusCallback)
-        * for facebook
-        * */
-         return false; // for now
+        return (currentUser != null && currentUser.getToken() != null);
     }
 
     private void showFTX() {

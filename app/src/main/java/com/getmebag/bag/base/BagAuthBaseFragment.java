@@ -161,7 +161,9 @@ public class BagAuthBaseFragment extends Fragment implements
             }
         } else {
             /* Otherwise, it's probably the request by the Facebook login button, keep track of the session */
-            Session.getActiveSession().onActivityResult(getActivity(), requestCode, resultCode, data);
+            if (Session.getActiveSession() != null) {
+                Session.getActiveSession().onActivityResult(getActivity(), requestCode, resultCode, data);
+            }
         }
     }
 

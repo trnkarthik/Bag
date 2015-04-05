@@ -163,23 +163,9 @@ public class LoginFragment extends BagAuthBaseFragment {
      */
     private void setAuthenticatedUser(AuthData authData) {
         if (authData != null) {
-            /* Hide all the login buttons */
-            fbLoginButton.setVisibility(View.GONE);
-            googleSignInButton.setVisibility(View.GONE);
-            username.setVisibility(View.VISIBLE);
-
-            tempSaveDataInFireBase(authData);
-
-            String name = null;
-            if (authData.getProvider().equals("facebook")
-                    || authData.getProvider().equals("google")) {
-                name = (String) authData.getProviderData().get("displayName");
-            } else {
-                Log.e(TAG, "Invalid provider: " + authData.getProvider());
-            }
-            if (name != null) {
-                username.setText("Logged in as " + name + " (" + authData.getProvider() + ")");
-            }
+            checkIfUserExistsAndSaveDataInFireBase(
+                    new Firebase(getString(R.string.firebase_users_url) + authData.getUid()),
+                    authData);
         } else {
             /* No authenticated user show all the login buttons */
             fbLoginButton.setVisibility(View.VISIBLE);
@@ -189,12 +175,30 @@ public class LoginFragment extends BagAuthBaseFragment {
         this.authData = authData;
     }
 
-    private void tempSaveDataInFireBase(AuthData authData) {
+    private void checkIfUserExistsAndSaveDataInFireBase(Firebase firebase, final AuthData authData) {
+        firebase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() == null) {
+                    Toast.makeText(getActivity(), "This guy is new!", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getActivity(), "Old Dude!", Toast.LENGTH_LONG).show();
+                }
+                saveDataInFireBase(authData);
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Toast.makeText(getActivity(), "Sorry! Result not available at this time!", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void saveDataInFireBase(AuthData authData) {
+        convertToBagUser(authData);
         //first create user ref
         Firebase userFireBase = firebaseUsersRef.child(authData.getUid());
-        checkIfUserExists(userFireBase);
-
-        userFireBase.setValue(convertToBagUser(authData), new Firebase.CompletionListener() {
+        userFireBase.setValue(bagUser, new Firebase.CompletionListener() {
             @Override
             public void onComplete(FirebaseError firebaseError, Firebase firebase) {
                 if (firebaseError != null) {
@@ -205,6 +209,8 @@ public class LoginFragment extends BagAuthBaseFragment {
                     Toast.makeText(getActivity(),
                             "Data saved successfully. ",
                             Toast.LENGTH_LONG).show();
+                    currentUserPreference.set(bagUser);
+                    launchMainScreen();
                 }
             }
         });
@@ -254,9 +260,6 @@ public class LoginFragment extends BagAuthBaseFragment {
         } else {
             bagUser = null;
         }
-
-        currentUserPreference.set(bagUser);
-
         return bagUser;
     }
 
@@ -265,25 +268,6 @@ public class LoginFragment extends BagAuthBaseFragment {
             return object.toString();
         }
         return null;
-    }
-
-    // TODO : Look into this again
-    private void checkIfUserExists(Firebase firebase) {
-        firebase.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.getValue() == null) {
-                    Toast.makeText(getActivity(), "This guy is new!", Toast.LENGTH_LONG).show();
-                } else {
-                    Toast.makeText(getActivity(), "Old Dude!", Toast.LENGTH_LONG).show();
-                }
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-                Toast.makeText(getActivity(), "Sorry! Result not available at this time!", Toast.LENGTH_LONG).show();
-            }
-        });
     }
 
     /**
@@ -335,7 +319,6 @@ public class LoginFragment extends BagAuthBaseFragment {
             progressDialog.dismiss();
             Log.i(TAG, provider + " auth successful");
             setAuthenticatedUser(authData);
-            launchMainScreen();
         }
 
         @Override
