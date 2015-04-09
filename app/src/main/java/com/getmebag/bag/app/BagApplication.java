@@ -7,6 +7,7 @@ import com.getmebag.bag.androidspecific.AndroidModule;
 import com.getmebag.bag.base.UIBaseModule;
 import com.getmebag.bag.ftx.UIFTXModule;
 import com.getmebag.bag.login.UILoginModule;
+import com.getmebag.bag.settings.SettingsModule;
 
 import java.util.Arrays;
 import java.util.List;
@@ -33,6 +34,7 @@ public class BagApplication extends Application {
                 new AndroidModule(this),
                 new UIBaseModule(),
                 new UILoginModule(),
+                new SettingsModule(),
                 new UIFTXModule()
         );
     }

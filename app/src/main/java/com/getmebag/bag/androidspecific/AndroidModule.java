@@ -79,7 +79,6 @@ public class AndroidModule {
     }
 
     @Provides
-    @Singleton
     @CurrentUser
     BagUser currentUser(@CurrentUserPreference CustomObjectPreference<BagUser> customObjectPreference) {
         return (BagUser) customObjectPreference.get(BagUser.class);

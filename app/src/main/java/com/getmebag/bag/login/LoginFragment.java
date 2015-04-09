@@ -64,6 +64,7 @@ public class LoginFragment extends BagAuthBaseFragment {
     BagUser bagUser;
 
     private String gmail;
+    private boolean isAuthDataSet = false;
 
     @Inject
     public LoginFragment() {
@@ -162,9 +163,9 @@ public class LoginFragment extends BagAuthBaseFragment {
      * Once a user is logged in, take the authData provided from Firebase and "use" it.
      */
     private void setAuthenticatedUser(AuthData authData) {
-        if (authData != null) {
+        if (!isAuthDataSet && authData != null) {
             checkIfUserExistsAndSaveDataInFireBase(
-                    new Firebase(getString(R.string.firebase_users_url) + authData.getUid()),
+                    appContext.getString(R.string.firebase_users_url) + authData.getUid(),
                     authData);
         } else {
             /* No authenticated user show all the login buttons */
@@ -175,14 +176,18 @@ public class LoginFragment extends BagAuthBaseFragment {
         this.authData = authData;
     }
 
-    private void checkIfUserExistsAndSaveDataInFireBase(Firebase firebase, final AuthData authData) {
+    private void checkIfUserExistsAndSaveDataInFireBase(String firebasePath, final AuthData authData) {
+        isAuthDataSet = true;
+        Firebase firebase = new Firebase(firebasePath);
         firebase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() == null) {
                     Toast.makeText(getActivity(), "This guy is new!", Toast.LENGTH_LONG).show();
+                    Log.d("Karu", "This guy is new!");
                 } else {
                     Toast.makeText(getActivity(), "Old Dude!", Toast.LENGTH_LONG).show();
+                    Log.d("Karu", "Old Dude!");
                 }
                 saveDataInFireBase(authData);
             }
@@ -197,23 +202,23 @@ public class LoginFragment extends BagAuthBaseFragment {
     private void saveDataInFireBase(AuthData authData) {
         convertToBagUser(authData);
         //first create user ref
-        Firebase userFireBase = firebaseUsersRef.child(authData.getUid());
-        userFireBase.setValue(bagUser, new Firebase.CompletionListener() {
-            @Override
-            public void onComplete(FirebaseError firebaseError, Firebase firebase) {
-                if (firebaseError != null) {
-                    Toast.makeText(getActivity(),
-                            "Data could not be saved. " + firebaseError.getMessage(),
-                            Toast.LENGTH_LONG).show();
-                } else {
-                    Toast.makeText(getActivity(),
-                            "Data saved successfully. ",
-                            Toast.LENGTH_LONG).show();
-                    currentUserPreference.set(bagUser);
-                    launchMainScreen();
-                }
-            }
-        });
+        firebaseUsersRef.child(authData.getUid())
+                .setValue(bagUser, new Firebase.CompletionListener() {
+                    @Override
+                    public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                        if (firebaseError != null) {
+//                    Toast.makeText(getActivity(),
+//                            "Data could not be saved. " + firebaseError.getMessage(),
+//                            Toast.LENGTH_LONG).show();
+                        } else {
+//                    Toast.makeText(getActivity(),
+//                            "Data saved successfully. ",
+//                            Toast.LENGTH_LONG).show();
+                            currentUserPreference.set(bagUser);
+                            launchMainScreen();
+                        }
+                    }
+                });
     }
 
     private BagUser convertToBagUser(AuthData authData) {
@@ -271,39 +276,6 @@ public class LoginFragment extends BagAuthBaseFragment {
     }
 
     /**
-     * Unauthenticate from Firebase and from providers where necessary.
-     */
-    private void logout() {
-        if (this.authData != null) {
-            /* logout of Firebase */
-            mainFirebaseRef.unauth();
-            /* Logout of any of the Frameworks. This step is optional, but ensures the user is not logged into
-             * Facebook/Google+ after logging out of Firebase. */
-            if (this.authData.getProvider().equals("facebook")) {
-                /* Logout from Facebook */
-                Session session = Session.getActiveSession();
-                if (session != null) {
-                    if (!session.isClosed()) {
-                        session.closeAndClearTokenInformation();
-                    }
-                } else {
-                    session = new Session(getActivity());
-                    Session.setActiveSession(session);
-                    session.closeAndClearTokenInformation();
-                }
-            } else if (this.authData.getProvider().equals("google")) {
-                /* Logout from Google+ */
-                if (googleApiClient.isConnected()) {
-                    Plus.AccountApi.clearDefaultAccount(googleApiClient);
-                    googleApiClient.disconnect();
-                }
-            }
-            /* Update authenticated user and show login buttons */
-            setAuthenticatedUser(null);
-        }
-    }
-
-    /**
      * Utility class for authentication results
      */
     private class AuthResultHandler implements Firebase.AuthResultHandler {
@@ -329,59 +301,18 @@ public class LoginFragment extends BagAuthBaseFragment {
     }
 
     private void launchMainScreen() {
-        startActivity(MainActivity.intent(getActivity()));
+        if (isAdded()) {
+            startActivity(MainActivity.intent((appContext)));
+        }
     }
 
     public void getGoogleOAuthTokenAndLogin() {
-        progressDialog.show();
+//        progressDialog.show();
         /* Get OAuth token in Background */
-        AsyncTask<Void, Void, String> task = new AsyncTask<Void, Void, String>() {
-            String errorMessage = null;
-
-            @Override
-            protected String doInBackground(Void... params) {
-                String token = null;
-
-                try {
-                    String scope = String.format("oauth2:%s", Scopes.PROFILE, Scopes.PLUS_ME);
-                    gmail = Plus.AccountApi.getAccountName(googleApiClient);
-                    bagUserBuilder.setEmail(gmail);
-                    token = GoogleAuthUtil.getToken(getActivity(), gmail, scope);
-                } catch (IOException transientEx) {
-                    /* Network or server error */
-                    Log.e(TAG, "Error authenticating with Google: " + transientEx);
-                    errorMessage = "Network error: " + transientEx.getMessage();
-                } catch (UserRecoverableAuthException e) {
-                    Log.w(TAG, "Recoverable Google OAuth error: " + e.toString());
-                    /* We probably need to ask for permissions, so start the intent if there is none pending */
-                    if (!googleIntentInProgress) {
-                        googleIntentInProgress = true;
-                        Intent recover = e.getIntent();
-                        startActivityForResult(recover, RC_GOOGLE_LOGIN);
-                    }
-                } catch (GoogleAuthException authEx) {
-                    /* The call is not ever expected to succeed assuming you have already verified that
-                     * Google Play services is installed. */
-                    Log.e(TAG, "Error authenticating with Google: " + authEx.getMessage(), authEx);
-                    errorMessage = "Error authenticating with Google: " + authEx.getMessage();
-                }
-                return token;
-            }
-
-            @Override
-            protected void onPostExecute(String token) {
-                googleLoginClicked = false;
-                if (token != null) {
-                    /* Successfully got OAuth token, now login with Google */
-                    Log.d("karu", token);
-                    mainFirebaseRef.authWithOAuthToken("google", token, new AuthResultHandler("google"));
-                } else if (errorMessage != null) {
-                    progressDialog.dismiss();
-                    showErrorDialog(errorMessage);
-                }
-            }
-        };
-        task.execute();
+        if (isAdded()) {
+            AsyncTask<Void, Void, String> task = new GoogleOauthTokenAsyncTask();
+            task.execute();
+        }
     }
 
     @Override
@@ -404,5 +335,53 @@ public class LoginFragment extends BagAuthBaseFragment {
     public void onConnected(Bundle bundle) {
         super.onConnected(bundle);
         getGoogleOAuthTokenAndLogin();
+    }
+
+    private class GoogleOauthTokenAsyncTask extends AsyncTask<Void, Void, String> {
+        String errorMessage = null;
+
+        @Override
+        protected String doInBackground(Void... params) {
+            String token = null;
+            if (getActivity() != null) {
+                try {
+                    String scope = String.format("oauth2:%s", Scopes.PROFILE, Scopes.PLUS_ME);
+                    gmail = Plus.AccountApi.getAccountName(googleApiClient);
+                    bagUserBuilder.setEmail(gmail);
+                    token = GoogleAuthUtil.getToken(getActivity(), gmail, scope);
+                } catch (IOException transientEx) {
+                /* Network or server error */
+                    Log.e(TAG, "Error authenticating with Google: " + transientEx);
+                    errorMessage = "Network error: " + transientEx.getMessage();
+                } catch (UserRecoverableAuthException e) {
+                    Log.w(TAG, "Recoverable Google OAuth error: " + e.toString());
+                /* We probably need to ask for permissions, so start the intent if there is none pending */
+                    if (!googleIntentInProgress) {
+                        googleIntentInProgress = true;
+                        Intent recover = e.getIntent();
+                        startActivityForResult(recover, RC_GOOGLE_LOGIN);
+                    }
+                } catch (GoogleAuthException authEx) {
+                /* The call is not ever expected to succeed assuming you have already verified that
+                 * Google Play services is installed. */
+                    Log.e(TAG, "Error authenticating with Google: " + authEx.getMessage(), authEx);
+                    errorMessage = "Error authenticating with Google: " + authEx.getMessage();
+                }
+            }
+            return token;
+        }
+
+        @Override
+        protected void onPostExecute(String token) {
+            googleLoginClicked = false;
+            if (token != null) {
+                /* Successfully got OAuth token, now login with Google */
+                Log.d("karu", token);
+                mainFirebaseRef.authWithOAuthToken("google", token, new AuthResultHandler("google"));
+            } else if (errorMessage != null) {
+                progressDialog.dismiss();
+                showErrorDialog(errorMessage);
+            }
+        }
     }
 }

@@ -2,6 +2,7 @@ package com.getmebag.bag.base;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.getmebag.bag.MainActivity;
 import com.getmebag.bag.annotations.FireBaseUsersRef;
+import com.getmebag.bag.annotations.ForApplication;
 import com.getmebag.bag.annotations.MainFireBaseRef;
 import com.getmebag.bag.app.BagApplication;
 import com.google.android.gms.common.ConnectionResult;
@@ -44,6 +46,9 @@ public class BagAuthBaseFragment extends Fragment implements
     @Inject
     @FireBaseUsersRef
     public Firebase firebaseUsersRef;
+
+    @Inject @ForApplication
+    public Context appContext;
 
     /* Data from the authenticated user */
     public AuthData authData;
@@ -79,12 +84,14 @@ public class BagAuthBaseFragment extends Fragment implements
      * Show errors to users
      */
     public void showErrorDialog(String message) {
-        new AlertDialog.Builder(getActivity())
-                .setTitle("Error")
-                .setMessage(message)
-                .setPositiveButton(android.R.string.ok, null)
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .show();
+        if (isAdded()) {
+            new AlertDialog.Builder(getActivity())
+                    .setTitle("Error")
+                    .setMessage(message)
+                    .setPositiveButton(android.R.string.ok, null)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+        }
     }
 
     /* Handle any changes to the Facebook session */
@@ -101,7 +108,9 @@ public class BagAuthBaseFragment extends Fragment implements
         if (googleConnectionResult.hasResolution()) {
             try {
                 googleIntentInProgress = true;
-                googleConnectionResult.startResolutionForResult(getActivity(), RC_GOOGLE_LOGIN);
+                if (isAdded()) {
+                    googleConnectionResult.startResolutionForResult(getActivity(), RC_GOOGLE_LOGIN);
+                }
             } catch (IntentSender.SendIntentException e) {
                 // The intent was canceled before it was sent.  Return to the default
                 // state and attempt to connect to get an updated ConnectionResult.

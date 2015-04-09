@@ -34,7 +34,7 @@ public class LoginActivity extends BagAuthBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        addFragmentToContentView(savedInstanceState, R.id.login_container,
+        addFragmentToContentView(savedInstanceState, R.id.container,
                 loginFragment);
         isThisFirstTimeUse.set(false);
     }
