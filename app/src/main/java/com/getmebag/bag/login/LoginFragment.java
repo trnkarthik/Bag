@@ -22,10 +22,14 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 import com.getmebag.bag.MainActivity;
 import com.getmebag.bag.R;
+import com.getmebag.bag.androidspecific.prefs.BooleanPreference;
 import com.getmebag.bag.androidspecific.prefs.CustomObjectPreference;
 import com.getmebag.bag.annotations.CurrentUserPreference;
+import com.getmebag.bag.annotations.IsThisLoggedInFirstTimeUse;
 import com.getmebag.bag.base.BagAuthBaseFragment;
 import com.getmebag.bag.model.BagUser;
+import com.getmebag.bag.model.CachedUserData;
+import com.getmebag.bag.userprofile.UserProfileActivity;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.UserRecoverableAuthException;
@@ -60,8 +64,14 @@ public class LoginFragment extends BagAuthBaseFragment {
     @CurrentUserPreference
     CustomObjectPreference<BagUser> currentUserPreference;
 
+    @Inject
+    @IsThisLoggedInFirstTimeUse
+    BooleanPreference isThisLoggedInFTX;
+
     BagUser.Builder bagUserBuilder = new BagUser.Builder();
     BagUser bagUser;
+
+    CachedUserData.Builder cachedUserDataBuilder = new CachedUserData.Builder();
 
     private String gmail;
     private boolean isAuthDataSet = false;
@@ -178,47 +188,70 @@ public class LoginFragment extends BagAuthBaseFragment {
 
     private void checkIfUserExistsAndSaveDataInFireBase(String firebasePath, final AuthData authData) {
         isAuthDataSet = true;
+        convertToBagUser(authData);
         Firebase firebase = new Firebase(firebasePath);
         firebase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() == null) {
-                    Toast.makeText(getActivity(), "This guy is new!", Toast.LENGTH_LONG).show();
-                    Log.d("Karu", "This guy is new!");
+                    //New Guy
+                    isThisLoggedInFTX.set(true);
+                    saveDataInFireBase(authData, true);
                 } else {
-                    Toast.makeText(getActivity(), "Old Dude!", Toast.LENGTH_LONG).show();
-                    Log.d("Karu", "Old Dude!");
+                    //Old Dude
+                    isThisLoggedInFTX.set(false);
+                    saveDataInFireBase(authData, false);
                 }
-                saveDataInFireBase(authData);
             }
 
             @Override
             public void onCancelled(FirebaseError firebaseError) {
-                Toast.makeText(getActivity(), "Sorry! Result not available at this time!", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "Sorry! Result not available at this time!",
+                        Toast.LENGTH_LONG).show();
             }
         });
     }
 
-    private void saveDataInFireBase(AuthData authData) {
-        convertToBagUser(authData);
+    private void saveDataInFireBase(final AuthData authData, boolean isThisLoggedInFirstTime) {
         //first create user ref
-        firebaseUsersRef.child(authData.getUid())
-                .setValue(bagUser, new Firebase.CompletionListener() {
-                    @Override
-                    public void onComplete(FirebaseError firebaseError, Firebase firebase) {
-                        if (firebaseError != null) {
-//                    Toast.makeText(getActivity(),
-//                            "Data could not be saved. " + firebaseError.getMessage(),
-//                            Toast.LENGTH_LONG).show();
-                        } else {
-//                    Toast.makeText(getActivity(),
-//                            "Data saved successfully. ",
-//                            Toast.LENGTH_LONG).show();
-                            currentUserPreference.set(bagUser);
-                            launchMainScreen();
+        if (isThisLoggedInFirstTime) {
+            firebaseUsersRef.child(authData.getUid())
+                    .setValue(bagUser, new Firebase.CompletionListener() {
+                        @Override
+                        public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                            if (firebaseError != null) {
+                                //Some problem with saving data. Show retry dialog
+                                showErrorDialog("System not responding. Please try again");
+                                if (mainFirebaseRef != null) {
+                                    mainFirebaseRef.unauth();
+                                }
+                            } else {
+                                //Data saved successfully.Launch FTX flow.
+                                currentUserPreference.set(bagUser);
+                                launchFTXFlow();
+                            }
                         }
-                    }
-                });
+                    });
+        } else {
+            firebaseUsersRef.child(authData.getUid())
+                    .child(getString(R.string.firebase_cached_user_data_url_part))
+                    .setValue(bagUser.getCachedUserData(), new Firebase.CompletionListener() {
+                        @Override
+                        public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                            if (firebaseError != null) {
+                                //Some problem with saving data. Show retry dialog
+                                showErrorDialog("System not responding. Please try again");
+                                if (mainFirebaseRef != null) {
+                                    mainFirebaseRef.unauth();
+                                }
+                            } else {
+                                //Data saved successfully.Launch Main screen.
+                                currentUserPreference.set(bagUser);
+                                launchMainScreen();
+                            }
+                        }
+                    });
+        }
     }
 
     private BagUser convertToBagUser(AuthData authData) {
@@ -227,9 +260,11 @@ public class LoginFragment extends BagAuthBaseFragment {
         if (authData.getProvider().equals("google")) {
             bagUserBuilder.setProvider(authData.getProvider())
                     .setToken(authData.getToken())
+                    .setProviderId(authData.getProviderData().get("id").toString());
+
+            cachedUserDataBuilder
                     .setAccessToken(nullSafe(authData.getProviderData().get("accessToken")))
-                    .setProviderId(authData.getProviderData().get("id").toString())
-                    .setUserName(nullSafe(authData.getProviderData().get("displayName")))
+                    .setUserName(nullSafe(authData.getProviderData().get("displayName"), userCachedData.get("given_name")))
                     .setFirstName(nullSafe(userCachedData.get("given_name")))
                     .setLastName(nullSafe(userCachedData.get("family_name")))
                     .setGender(nullSafe(userCachedData.get("gender")))
@@ -238,20 +273,22 @@ public class LoginFragment extends BagAuthBaseFragment {
             if (googleApiClient.isConnected()) {
                 Person googlePerson = Plus.PeopleApi.getCurrentPerson(googleApiClient);
                 if (googlePerson != null) {
-                    bagUserBuilder.setBirthDate(nullSafe(googlePerson.getBirthday()));
-                    bagUserBuilder.setEmail(nullSafe(Plus.AccountApi.getAccountName(googleApiClient)));
-
+                    cachedUserDataBuilder.setBirthDate(nullSafe(googlePerson.getBirthday()));
+                    cachedUserDataBuilder.setEmail(nullSafe(Plus.AccountApi.getAccountName(googleApiClient)));
                 }
             } else {
-                bagUserBuilder.setEmail(nullSafe(gmail));
+                cachedUserDataBuilder.setEmail(nullSafe(gmail));
             }
+            bagUserBuilder.setCachedUserData(cachedUserDataBuilder.build());
             bagUser = bagUserBuilder.build();
 
         } else if (authData.getProvider().equals("facebook")) {
             bagUserBuilder.setProvider(authData.getProvider())
                     .setToken(authData.getToken())
+                    .setProviderId(authData.getProviderData().get("id").toString());
+
+            cachedUserDataBuilder
                     .setAccessToken(nullSafe(authData.getProviderData().get("accessToken")))
-                    .setProviderId(authData.getProviderData().get("id").toString())
                     .setUserName(nullSafe(authData.getProviderData().get("displayName")))
                     .setEmail(nullSafe(authData.getProviderData().get("email")))
                     .setFirstName(nullSafe(userCachedData.get("first_name")))
@@ -259,13 +296,31 @@ public class LoginFragment extends BagAuthBaseFragment {
                     .setGender(nullSafe(userCachedData.get("gender")))
                     .setBirthDate(nullSafe(userCachedData.get("birthday")))
                     .setProfileLink(nullSafe(userCachedData.get("link")))
-                    .setProfilePictureURL(nullSafe(userCachedData.get("picture")));
+                    .setProfilePictureURL(parseProfilePicture(userCachedData.get("picture")));
+            bagUserBuilder.setCachedUserData(cachedUserDataBuilder.build());
             bagUser = bagUserBuilder.build();
 
         } else {
             bagUser = null;
         }
         return bagUser;
+    }
+
+    private String nullSafe(Object object1, Object object2) {
+        if (object1 != null) {
+            return object1.toString();
+        }
+        if (object2 != null) {
+            return object2.toString();
+        }
+        return null;
+    }
+
+    private String parseProfilePicture(Object profilePic) {
+        Map<String, Object> profilePicJson = (Map<String, Object>) profilePic;
+        Map<String, Object> data = (Map<String, Object>) profilePicJson.get("data");
+        String url = (String) data.get("url");
+        return nullSafe(url);
     }
 
     private String nullSafe(Object object) {
@@ -303,6 +358,12 @@ public class LoginFragment extends BagAuthBaseFragment {
     private void launchMainScreen() {
         if (isAdded()) {
             startActivity(MainActivity.intent((appContext)));
+        }
+    }
+
+    private void launchFTXFlow() {
+        if (isAdded()) {
+            startActivity(UserProfileActivity.intent((appContext)));
         }
     }
 
@@ -347,7 +408,7 @@ public class LoginFragment extends BagAuthBaseFragment {
                 try {
                     String scope = String.format("oauth2:%s", Scopes.PROFILE, Scopes.PLUS_ME);
                     gmail = Plus.AccountApi.getAccountName(googleApiClient);
-                    bagUserBuilder.setEmail(gmail);
+                    cachedUserDataBuilder.setEmail(gmail);
                     token = GoogleAuthUtil.getToken(getActivity(), gmail, scope);
                 } catch (IOException transientEx) {
                 /* Network or server error */

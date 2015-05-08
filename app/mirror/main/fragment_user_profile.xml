@@ -1,0 +1,38 @@
+<!-- [ Mirror metadata ] generatedAt: 1429433107156 -->
+<!-- Generated screen file. Fill the id tags below with content with
+which to populate your previewed layout. For a complete specification
+of sample data, please see http://jimulabs.com/sample-data-specifications/ 
+
+Valid attributes on <screen> tag: theme="@style/someTheme" inEditMode="false" overlay="@drawable/mockup" -->
+<screen>
+    <_content layout="@layout/fragment_user_profile">
+        <!-- TextView Examples:
+        <profile_email text="@string/string_resource" />
+        <profile_email text="Text literal" textSize="14sp" /> -->
+        <profile_email />
+        <profile_listview>
+            <items layout="@layout/list_item_profile" >
+                <_item>
+                    <profile_list_item_indication_icon text="{fa-android}" />
+                    <profile_list_item_description text="Android" />
+                    <profile_list_item_action_icon text="{fa-android}" />
+                    <profile_list_item_description_header text="This cannot be changed later." />
+                    <profile_list_item_cta_icon text="{fa-android}" />
+                </_item>
+                <_item>
+                    <profile_list_item_indication_icon text="{fa-android}" />
+                    <profile_list_item_description text="Android1" />
+                    <profile_list_item_action_icon text="{fa-android}" />
+                    <profile_list_item_description_header text="(optional)" />
+                    <profile_list_item_cta_icon text="{fa-android}" />
+                </_item>
+                <_item>
+                    <profile_list_item_indication_icon text="{fa-android}" />
+                    <profile_list_item_description text="Android" />
+                    <profile_list_item_action_icon text="{fa-android}" />
+                    <profile_list_item_cta_icon text="{fa-android}" />
+                </_item>
+            </items>
+                </profile_listview>
+    </_content>
+</screen>

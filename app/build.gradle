@@ -8,7 +8,7 @@ apply from: '../gradle_includes/findbugs.gradle'
  */
 buildscript {
     repositories {
-        mavenCentral()
+        jcenter()
         mavenLocal()
     }
 
@@ -73,7 +73,6 @@ dependencies {
     compile 'com.jakewharton.timber:timber:2.4.1'
     compile 'com.netflix.rxjava:rxjava-core:0.20.2'
     compile 'com.netflix.rxjava:rxjava-android:0.20.2'
-    compile 'me.grantland:autofittextview:0.1.1'
     compile 'org.slf4j:slf4j-android:1.7.7'
     compile 'net.danlew:android.joda:2.4.0'
     compile 'com.etsy.android.grid:library:1.0.3'
@@ -82,8 +81,13 @@ dependencies {
     compile 'com.android.support:appcompat-v7:21.0.3'
     compile 'com.android.support:support-v13:21.0.3'
     compile 'com.google.android.gms:play-services-plus:6.5.87'
+    compile 'com.google.android.gms:play-services-maps:6.5.87'
     compile 'com.facebook.android:facebook-android-sdk:3.21.1'
     compile 'com.firebase:firebase-client-android:2.2.0'
+    compile 'com.github.markushi:circlebutton:1.1'
+
+    compile 'me.grantland:autofittextview:0.1.1'
+    compile 'com.joanzapata.android:android-iconify:1.0.9'
 }
 
 android {

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="more_info_cta_birthday">Your birthday helps us customize your bag experience</string>
+    <string name="more_info_cta_phone_number">Your phone number helps your friends to easily find you on bag</string>
+
+    <string name="dialog_ok">OK</string>
+
+</resources>

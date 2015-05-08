@@ -10,7 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.getmebag.bag.androidspecific.prefs.BooleanPreference;
 import com.getmebag.bag.annotations.CurrentUser;
+import com.getmebag.bag.annotations.IsThisLoggedInFirstTimeUse;
 import com.getmebag.bag.base.BagAuthBaseActivity;
 import com.getmebag.bag.base.BagAuthBaseFragment;
 import com.getmebag.bag.model.BagUser;
@@ -80,6 +82,11 @@ public class MainActivity extends BagAuthBaseActivity {
         @CurrentUser
         BagUser currentUser;
 
+        @Inject
+        @IsThisLoggedInFirstTimeUse
+        BooleanPreference isThisLoggedInFTX;
+
+
         public MainFragment() {
         }
 
@@ -89,7 +96,10 @@ public class MainActivity extends BagAuthBaseActivity {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
             ButterKnife.inject(this, rootView);
 
-            textView.setText(currentUser.getEmail() + "\n" + currentUser.getUserName());
+            //Set isThisLoggedInFTX to false once user reaches main screen.
+            isThisLoggedInFTX.set(false);
+            textView.setText(currentUser.getCachedUserData().getEmail() + "\n" +
+                    currentUser.getCachedUserData().getUserName());
 
             return rootView;
         }

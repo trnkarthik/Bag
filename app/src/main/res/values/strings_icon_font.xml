@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="icon_font_edit">{fa-pencil}</string>
+    <string name="icon_font_more_info">{fa-question-circle}</string>
+    <string name="icon_font_user">{fa-user}</string>
+    <string name="icon_font_phone">{fa-phone}</string>
+    <string name="icon_font_birthday">{fa-birthday-cake}</string>
+    <string name="icon_font_calendar">{fa-calendar}</string>
+    <string name="icon_font_up">{fa-chevron-up}</string>
+    <string name="icon_font_down">{fa-chevron-down}</string>
+
+</resources>

@@ -1,8 +1,41 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+    <style name="BagStandardTheme" parent="Theme.AppCompat.Light">
+        <item name="android:actionBarStyle">@style/BagStandardTheme.ActionBar</item>
+        <item name="android:actionOverflowButtonStyle">@style/BagStandardTheme.OverFlow</item>
+
+        <!-- Support library compatibility -->
+        <item name="actionBarStyle">@style/BagStandardTheme.ActionBar</item>
+        <item name="actionOverflowButtonStyle">@style/BagStandardTheme.OverFlow</item>
+
+        <!-- customize the color palette -->
+        <item name="colorPrimary">@color/default_theme_color</item>
+        <item name="colorPrimaryDark">@color/default_theme_notification_bar</item>
+        <item name="colorAccent">@color/default_theme_color</item>
+
+    </style>
+
+    <!-- Base application theme. -->
+    <style name="BagNoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
+    </style>
+
+    <!-- Action Bar Styles -->
+    <style name="BagStandardTheme.ActionBar" parent="@style/Widget.AppCompat.ActionBar">
+        <item name="android:background">@color/default_theme_color</item>
+        <item name="android:titleTextStyle">@style/BagStandardTheme.ActionBar.TextStyle</item>
+
+        <!-- Support library compatibility -->
+        <item name="background">@color/default_theme_color</item>
+        <item name="titleTextStyle">@style/BagStandardTheme.ActionBar.TextStyle</item>
+    </style>
+
+    <style name="BagStandardTheme.ActionBar.TextStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/default_theme_actionbar_text_color</item>
+    </style>
+
+    <style name="BagStandardTheme.OverFlow" parent="@style/Widget.AppCompat.ActionButton.Overflow">
+        <item name="android:color">@color/default_theme_actionbar_text_color</item>
     </style>
 
 </resources>

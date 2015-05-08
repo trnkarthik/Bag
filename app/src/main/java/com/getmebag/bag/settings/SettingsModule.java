@@ -2,6 +2,8 @@ package com.getmebag.bag.settings;
 
 import com.getmebag.bag.androidspecific.AndroidModule;
 import com.getmebag.bag.ftx.UIFTXModule;
+import com.getmebag.bag.userprofile.UserProfileActivity;
+import com.getmebag.bag.userprofile.UserProfileFragment;
 
 import dagger.Module;
 
@@ -16,6 +18,8 @@ import dagger.Module;
         injects = {
                 SettingsActivity.class,
                 SettingsFragment.class,
+                UserProfileActivity.class,
+                UserProfileFragment.class
         },
         complete = false
 )

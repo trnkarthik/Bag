@@ -14,6 +14,7 @@ import com.getmebag.bag.annotations.CurrentUserPreference;
 import com.getmebag.bag.base.BagAuthBaseFragment;
 import com.getmebag.bag.login.LoginActivity;
 import com.getmebag.bag.model.BagUser;
+import com.getmebag.bag.userprofile.UserProfileActivity;
 import com.google.android.gms.plus.Plus;
 
 import javax.inject.Inject;
@@ -29,6 +30,9 @@ public class SettingsFragment extends BagAuthBaseFragment {
     @InjectView(R.id.logout)
     Button logoutButton;
 
+    @InjectView(R.id.profile)
+    Button profileButton;
+
     @Inject @CurrentUserPreference
     CustomObjectPreference<BagUser> currentUserPreference;
 
@@ -43,8 +47,18 @@ public class SettingsFragment extends BagAuthBaseFragment {
         ButterKnife.inject(this, rootView);
 
         setUpLogoutButton();
+        setUpProfileButton();
 
         return rootView;
+    }
+
+    private void setUpProfileButton() {
+        profileButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(UserProfileActivity.intent(getActivity()));
+            }
+        });
     }
 
     private void setUpLogoutButton() {

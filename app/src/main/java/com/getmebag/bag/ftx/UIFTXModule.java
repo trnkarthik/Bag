@@ -6,6 +6,7 @@ import com.getmebag.bag.MainActivity;
 import com.getmebag.bag.androidspecific.AndroidModule;
 import com.getmebag.bag.androidspecific.prefs.BooleanPreference;
 import com.getmebag.bag.annotations.IsThisFirstTimeUse;
+import com.getmebag.bag.annotations.IsThisLoggedInFirstTimeUse;
 
 import javax.inject.Singleton;
 
@@ -25,6 +26,8 @@ import dagger.Provides;
                 FTXSlideOneFragment.class,
                 FTXSlideTwoFragment.class,
                 FTXSlideThreeFragment.class,
+                FTXLocationActivity.class,
+                FTXLocationFragment.class,
                 MainActivity.class,
                 InitialControllerActivity.class,
         },
@@ -32,7 +35,6 @@ import dagger.Provides;
         library = true
 )
 public class UIFTXModule {
-    // TODO put your application-specific providers here!
 
     @Provides
     @Singleton
@@ -41,4 +43,12 @@ public class UIFTXModule {
         return new BooleanPreference(preferences, "bag_is_this_first_time_use", true);
     }
 
+    @Provides
+    @Singleton
+    @IsThisLoggedInFirstTimeUse
+    BooleanPreference isThisLoggedInFirstTimeUse(SharedPreferences preferences) {
+        return new BooleanPreference(preferences, "bag_is_this_logged_in_first_time_use", false);
+    }
+
 }
+

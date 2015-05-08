@@ -4,4 +4,7 @@
     <string name="ftx_sign_up">Sign Up</string>
     <string name="ftx_log_in">Log In</string>
 
+    <!--Location screen-->
+    <string name="fetching_your_location">Fetching your Location</string>
+
 </resources>

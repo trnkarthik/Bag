@@ -5,6 +5,7 @@ import android.app.Application;
 import com.firebase.client.Firebase;
 import com.getmebag.bag.androidspecific.AndroidModule;
 import com.getmebag.bag.base.UIBaseModule;
+import com.getmebag.bag.connections.InviteContactsModule;
 import com.getmebag.bag.ftx.UIFTXModule;
 import com.getmebag.bag.login.UILoginModule;
 import com.getmebag.bag.settings.SettingsModule;
@@ -35,7 +36,8 @@ public class BagApplication extends Application {
                 new UIBaseModule(),
                 new UILoginModule(),
                 new SettingsModule(),
-                new UIFTXModule()
+                new UIFTXModule(),
+                new InviteContactsModule()
         );
     }
 
