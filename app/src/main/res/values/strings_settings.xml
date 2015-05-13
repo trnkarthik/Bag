@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="settings_help">Help</string>
+    <string name="settings_profile">Profile</string>
+    <string name="settings_location">Location</string>
+    <string name="settings_invite_contacts">Invite Contacts</string>
+    <string name="settings_logout">Logout</string>
+
+</resources>

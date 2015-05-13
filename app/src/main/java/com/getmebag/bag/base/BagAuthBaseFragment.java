@@ -112,7 +112,7 @@ public class BagAuthBaseFragment extends Fragment implements
                     googleConnectionResult.startResolutionForResult(getActivity(), RC_GOOGLE_LOGIN);
                 }
             } catch (IntentSender.SendIntentException e) {
-                // The intent was canceled before it was sent.  Return to the default
+                // The clearIntent was canceled before it was sent.  Return to the default
                 // state and attempt to connect to get an updated ConnectionResult.
                 googleIntentInProgress = false;
                 googleApiClient.connect();

@@ -11,6 +11,10 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.getmebag.bag.R;
 import com.getmebag.bag.androidspecific.prefs.BooleanPreference;
 import com.getmebag.bag.annotations.CurrentUser;
@@ -21,6 +25,8 @@ import com.getmebag.bag.model.BagUser;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -60,6 +66,8 @@ public class UserProfileFragment extends BagAuthBaseFragment {
     @CurrentUser
     BagUser currentUser;
 
+    Map<String, Boolean> usernameAvailability = new HashMap<>();
+
     @Inject
     public UserProfileFragment() {
     }
@@ -77,7 +85,7 @@ public class UserProfileFragment extends BagAuthBaseFragment {
     }
 
     private void showNextButtonIfRequired() {
-        if(!isThisLoggedInFTX.get()) {
+        if (!isThisLoggedInFTX.get()) {
             nextButton.setVisibility(GONE);
         } else {
             nextButton.setVisibility(VISIBLE);
@@ -100,27 +108,17 @@ public class UserProfileFragment extends BagAuthBaseFragment {
     private void setupProfileListView() {
         ArrayList<ProfileItem> profileItems = new ArrayList<>();
 
-        profileItems.add(new ProfileItem.Builder()
-                .setItemIndicationIcon(getString(R.string.icon_font_user))
-                .setItemDescription(currentUser.getCachedUserData().getUserName())
-                .setItemActionIcon(getString(R.string.icon_font_edit))
-                .setItemActionType(USERNAME)
-                .setItemDescriptionHeader("Username cannot be changed later.")
-                .setItemDescriptionHeaderColor(getResources()
-                        .getColor(R.color.default_theme_warning_messages))
-                .build());
+        addUserNameRow(profileItems, 0);
+        addPhoneNumberRow(profileItems, 1);
+        addBirthdayRow(profileItems, 2);
 
-        profileItems.add(new ProfileItem.Builder()
-                .setItemIndicationIcon(getString(R.string.icon_font_phone))
-                .setItemDescription(getMyPhoneNumber())
-                .setItemActionIcon(getString(R.string.icon_font_edit))
-                .setItemActionType(PHONE_NUMBER)
-                .setItemCTAIcon(getString(R.string.icon_font_more_info))
-                .setItemCTADialogMessage(getString(R.string.more_info_cta_phone_number))
-                .setItemDescriptionHeader("(Optional)")
-                .build());
+        ProfileListAdapter adapter = new ProfileListAdapter(getActivity(),
+                R.layout.list_item_profile, profileItems, getActivity().getSupportFragmentManager());
+        profileListView.setAdapter(adapter);
+    }
 
-        profileItems.add(new ProfileItem.Builder()
+    private void addBirthdayRow(ArrayList<ProfileItem> profileItems, int position) {
+        profileItems.add(position, new ProfileItem.Builder()
                 .setItemIndicationIcon(getString(R.string.icon_font_birthday))
                 .setItemDescription(getBirthDate())
                 .setItemActionIcon(getBirthDateActionIcon())
@@ -128,11 +126,43 @@ public class UserProfileFragment extends BagAuthBaseFragment {
                 .setItemActionIconSize(24)
                 .setItemCTAIcon(getString(R.string.icon_font_more_info))
                 .setItemCTADialogMessage(getString(R.string.more_info_cta_birthday))
+                .setItemCTADialogTitle(getString(R.string.more_info_cta_birthday_title))
                 .build());
+    }
 
-        ProfileListAdapter adapter = new ProfileListAdapter(getActivity(),
-                R.layout.list_item_profile, profileItems, getActivity().getSupportFragmentManager());
-        profileListView.setAdapter(adapter);
+    private void addPhoneNumberRow(ArrayList<ProfileItem> profileItems, int position) {
+        profileItems.add(position, new ProfileItem.Builder()
+                .setItemIndicationIcon(getString(R.string.icon_font_phone))
+                .setItemDescription(getMyPhoneNumber())
+                .setItemActionIcon(getString(R.string.icon_font_edit))
+                .setItemActionType(PHONE_NUMBER)
+                .setItemCTAIcon(getString(R.string.icon_font_more_info))
+                .setItemCTADialogMessage(getString(R.string.more_info_cta_phone_number))
+                .setItemCTADialogTitle(getString(R.string.more_info_cta_phone_number_title))
+                .setItemDescriptionHeader(getString(R.string.ftx_optional))
+                .build());
+    }
+
+    private void addUserNameRow(ArrayList<ProfileItem> profileItems, int position) {
+        String currentUserNameWithOutSpaces = stripSpaces(currentUser.getCachedUserData().getUserName());
+        ProfileItem.Builder userNameBuilder = new ProfileItem.Builder();
+        if (isThisLoggedInFTX.get()) {
+            checkIfBagUserAliasExistsInFireBase(currentUserNameWithOutSpaces);
+            userNameBuilder
+                    .setItemIndicationIcon(getString(R.string.icon_font_user))
+                    .setItemDescription(stripSpaces(currentUser.getCachedUserData().getUserName()))
+                    .setItemActionIcon(getString(R.string.icon_font_edit))
+                    .setItemActionType(USERNAME)
+                    .setItemDescriptionHeader(getString(R.string.ftx_username_cannot_be_changed_later))
+                    .setItemDescriptionHeaderColor(getResources()
+                            .getColor(R.color.default_theme_warning_messages));
+        } else {
+            userNameBuilder
+                    .setItemIndicationIcon(getString(R.string.icon_font_user))
+                    .setItemDescription(stripSpaces(currentUser.getBagUserName()));
+        }
+
+        profileItems.add(position, userNameBuilder.build());
     }
 
     private String getBirthDate() {
@@ -157,31 +187,41 @@ public class UserProfileFragment extends BagAuthBaseFragment {
         return telephonyManager.getLine1Number();
     }
 
-/*
-    private void checkIfUserExistsAndSaveDataInFireBase(String firebasePath, final AuthData authData) {
-        Firebase firebase = new Firebase(firebasePath);
+    private String stripSpaces(String profileData) {
+        if (!TextUtils.isEmpty(profileData)) {
+            return profileData.replaceAll("\\s+", "");
+        }
+        return null;
+    }
+
+    private void checkIfBagUserAliasExistsInFireBase(final String alias) {
+        Firebase firebase = new Firebase(getString(R.string.firebase_bag_user_alias_url) +
+                alias);
         firebase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() == null) {
-                    //New Guy
-                    isThisLoggedInFTX.set(true);
-                    saveDataInFireBase(authData, true);
+                    //Username available
+                    usernameAvailability.put(alias, true);
                 } else {
-                    //Old Dude
-                    isThisLoggedInFTX.set(false);
-                    saveDataInFireBase(authData, false);
+                    //Username taken
+                    usernameAvailability.put(alias, false);
+                    refreshUserNameRow(alias);
                 }
             }
 
             @Override
             public void onCancelled(FirebaseError firebaseError) {
-                Toast.makeText(getActivity(), "Sorry! Result not available at this time!",
-                        Toast.LENGTH_LONG).show();
+                usernameAvailability.put(alias, null);
             }
         });
     }
-*/
+
+    private void refreshUserNameRow(String alias) {
+        if (usernameAvailability.get(alias) != null && !usernameAvailability.get(alias)) {
+            //TODO :
+        }
+    }
 
     @OnClick(R.id.profile_next)
     public void profileScreenNextButton(View view) {

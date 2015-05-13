@@ -9,6 +9,7 @@ import com.getmebag.bag.R;
 import com.getmebag.bag.androidspecific.prefs.BooleanPreference;
 import com.getmebag.bag.annotations.CurrentUser;
 import com.getmebag.bag.annotations.IsThisFirstTimeUse;
+import com.getmebag.bag.annotations.IsThisLoggedInFirstTimeUse;
 import com.getmebag.bag.app.BagApplication;
 import com.getmebag.bag.login.LoginActivity;
 import com.getmebag.bag.model.BagUser;
@@ -22,6 +23,9 @@ public class InitialControllerActivity extends Activity {
 
     @Inject @IsThisFirstTimeUse
     BooleanPreference isThisFirstTimeUse;
+
+    @Inject @IsThisLoggedInFirstTimeUse
+    BooleanPreference isThisLoggedInFTX;
 
     @Inject @CurrentUser
     BagUser currentUser;
@@ -43,7 +47,8 @@ public class InitialControllerActivity extends Activity {
     }
 
     private boolean hasLoggedInUserInfo() {
-        return (currentUser != null && currentUser.getToken() != null);
+        return (currentUser != null && currentUser.getToken() != null
+                && currentUser.getBagUserName() != null);
     }
 
     private void showFTX() {

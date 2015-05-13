@@ -13,6 +13,7 @@ public class ProfileItem {
     private final int itemActionIconSize;
     private final String itemCTAIcon;
     private final String itemCTADialogMessage;
+    private final String itemCTADialogTitle;
 
     public ProfileItem(Builder builder) {
         this.itemIndicationIcon = builder.itemIndicationIcon;
@@ -24,6 +25,7 @@ public class ProfileItem {
         this.itemActionIconSize = builder.itemActionIconSize;
         this.itemCTAIcon = builder.itemCTAIcon;
         this.itemCTADialogMessage = builder.itemCTADialogMessage;
+        this.itemCTADialogTitle = builder.itemCTADialogTitle;
     }
 
     public String getItemIndicationIcon() {
@@ -45,6 +47,7 @@ public class ProfileItem {
     public String getItemActionIcon() {
         return itemActionIcon;
     }
+
     public int getItemActionType() {
         return itemActionType;
     }
@@ -56,8 +59,13 @@ public class ProfileItem {
     public String getItemCTAIcon() {
         return itemCTAIcon;
     }
+
     public String getItemCTADialogMessage() {
         return itemCTADialogMessage;
+    }
+
+    public String getItemCTADialogTitle() {
+        return itemCTADialogTitle;
     }
 
     public static class Builder {
@@ -71,6 +79,7 @@ public class ProfileItem {
         private int itemActionIconSize;
         private String itemCTAIcon;
         private String itemCTADialogMessage;
+        private String itemCTADialogTitle;
 
         public Builder setItemIndicationIcon(String itemIndicationIcon) {
             this.itemIndicationIcon = itemIndicationIcon;
@@ -114,6 +123,11 @@ public class ProfileItem {
 
         public Builder setItemCTADialogMessage(String itemCTADialogMessage) {
             this.itemCTADialogMessage = itemCTADialogMessage;
+            return this;
+        }
+
+        public Builder setItemCTADialogTitle(String itemCTADialogTitle) {
+            this.itemCTADialogTitle = itemCTADialogTitle;
             return this;
         }
 

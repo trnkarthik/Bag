@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.getmebag.bag.MainActivity;
 import com.getmebag.bag.R;
 import com.getmebag.bag.base.BagAuthBaseActivity;
 
@@ -19,11 +18,15 @@ public class UserProfileActivity extends BagAuthBaseActivity {
     @Inject
     UserProfileFragment userProfileFragment;
 
-    public static Intent intent(Context context) {
+    public static Intent clearIntent(Context context) {
         Intent intent = new Intent(context, UserProfileActivity.class);
         intent.addFlags(FLAG_ACTIVITY_CLEAR_TOP
                 | FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
         return intent;
+    }
+
+    public static Intent intent(Context context) {
+        return new Intent(context, UserProfileActivity.class);
     }
 
     @Override
@@ -35,8 +38,11 @@ public class UserProfileActivity extends BagAuthBaseActivity {
         setActionBarIcon(null);
     }
 
+/*
     @Override
     public void onBackPressed() {
-        startActivity(MainActivity.intent(this));
+        TODO
+        startActivity(MainActivity.clearIntent(this));
     }
+*/
 }

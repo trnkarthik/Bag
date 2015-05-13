@@ -15,6 +15,8 @@
 
     <string name="profile_date_placeholder">dd/mm/yyyy</string>
     <string name="next">Next</string>
+    <string name="finish">Finish</string>
     <string name="title_activity_invite_contacts">InviteContactsActivity</string>
+    <string name="ftx_username_cannot_be_changed_later">Username cannot be changed later.</string>
 
 </resources>

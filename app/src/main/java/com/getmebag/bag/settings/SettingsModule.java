@@ -19,7 +19,8 @@ import dagger.Module;
                 SettingsActivity.class,
                 SettingsFragment.class,
                 UserProfileActivity.class,
-                UserProfileFragment.class
+                UserProfileFragment.class,
+                SettingsListAdapter.class,
         },
         complete = false
 )

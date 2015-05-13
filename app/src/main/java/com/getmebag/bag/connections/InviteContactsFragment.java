@@ -6,15 +6,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.getmebag.bag.MainActivity;
 import com.getmebag.bag.R;
+import com.getmebag.bag.androidspecific.prefs.BooleanPreference;
+import com.getmebag.bag.annotations.IsThisLoggedInFirstTimeUse;
 import com.getmebag.bag.base.BagAuthBaseFragment;
 
 import javax.inject.Inject;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+
 import static android.text.TextUtils.isEmpty;
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
 /**
  * Created by karthiktangirala on 4/29/15.
@@ -24,6 +34,13 @@ public class InviteContactsFragment extends BagAuthBaseFragment {
     ListView listView;
 
     @Inject
+    @IsThisLoggedInFirstTimeUse
+    BooleanPreference isThisLoggedInFTX;
+
+    @InjectView(R.id.invite_contacts_finish)
+    Button finishButton;
+
+    @Inject
     public InviteContactsFragment() {
     }
 
@@ -31,6 +48,10 @@ public class InviteContactsFragment extends BagAuthBaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_invite_contacts, container, false);
+
+        ButterKnife.inject(this, rootView);
+
+        showFinishButtonIfRequired();
 
         listView = (ListView) rootView.findViewById(R.id.contacts_listview);
 
@@ -108,9 +129,23 @@ public class InviteContactsFragment extends BagAuthBaseFragment {
 //        return arrContacts;
 //    }
 
+    private void showFinishButtonIfRequired() {
+        if (!isThisLoggedInFTX.get()) {
+            finishButton.setVisibility(GONE);
+        } else {
+            finishButton.setVisibility(VISIBLE);
+        }
+    }
+
     private boolean isPhoneNumberValid(String contactNumber) {
         return !isEmpty(contactNumber)
                 && Patterns.PHONE.matcher(contactNumber).matches()
                 && (contactNumber.length() >= 7);
     }
+
+    @OnClick(R.id.invite_contacts_finish)
+    public void inviteContactsFinishButton(View view) {
+        startActivity(MainActivity.intent(getActivity()));
+    }
+
 }

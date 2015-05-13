@@ -81,7 +81,7 @@ public class ProfileListAdapter extends ArrayAdapter<ProfileItem> implements Use
         ProfileItem profileItem = getItem(position);
 
         holder.indicationIcon.setText(profileItem.getItemIndicationIcon());
-        holder.description.setText(stripSpaces(profileItem.getItemDescription()));
+        holder.description.setText(profileItem.getItemDescription());
 
         if (profileItem.getItemActionType() != 0) {
             setViewOnclick(holder.description, profileItem.getItemActionType());
@@ -94,19 +94,19 @@ public class ProfileListAdapter extends ArrayAdapter<ProfileItem> implements Use
                 profileItem.getItemActionIconSize(), profileItem.getItemActionType());
 
         setCTAIcon(holder.ctaIcon, profileItem.getItemCTAIcon(),
-                profileItem.getItemCTADialogMessage());
+                profileItem.getItemCTADialogMessage(), profileItem.getItemCTADialogTitle());
 
     }
 
     private void setCTAIcon(IconTextView ctaIcon, String itemCTAIconValue,
-                            final String itemCTADialogMessage) {
+                            final String itemCTADialogMessage, final String itemCTADialogTitle) {
         if (!TextUtils.isEmpty(itemCTAIconValue)) {
             ctaIcon.setVisibility(VISIBLE);
             ctaIcon.setText(itemCTAIconValue);
             ctaIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    showAlertDialog(itemCTADialogMessage);
+                    showAlertDialog(itemCTADialogMessage, itemCTADialogTitle);
                 }
             });
         } else {
@@ -114,9 +114,10 @@ public class ProfileListAdapter extends ArrayAdapter<ProfileItem> implements Use
         }
     }
 
-    private void showAlertDialog(String itemCTADialogMessage) {
+    private void showAlertDialog(final String itemCTADialogMessage, final String itemCTADialogTitle) {
         new AlertDialog.Builder(getContext())
                 .setMessage(itemCTADialogMessage)
+                .setTitle(itemCTADialogTitle)
                 .setNeutralButton(getContext().getString(R.string.dialog_ok), null)
                 .show();
     }
@@ -175,13 +176,6 @@ public class ProfileListAdapter extends ArrayAdapter<ProfileItem> implements Use
         } else {
             descriptionHeader.setVisibility(GONE);
         }
-    }
-
-    private String stripSpaces(String profileData) {
-        if (!TextUtils.isEmpty(profileData)) {
-            return profileData.replaceAll("\\s+", "");
-        }
-        return null;
     }
 
     public static class DatePickerFragment extends DialogFragment

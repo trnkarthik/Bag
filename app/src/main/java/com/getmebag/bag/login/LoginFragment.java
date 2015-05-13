@@ -40,6 +40,7 @@ import com.google.android.gms.plus.model.people.Person;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -193,8 +194,9 @@ public class LoginFragment extends BagAuthBaseFragment {
         firebase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.getValue() == null) {
-                    //New Guy
+                if (dataSnapshot.getValue() == null ||
+                        ((HashMap)dataSnapshot.getValue()).get("bagUserName") == null) {
+                    //New Guy or BagUserName is not set yet.
                     isThisLoggedInFTX.set(true);
                     saveDataInFireBase(authData, true);
                 } else {
@@ -363,7 +365,7 @@ public class LoginFragment extends BagAuthBaseFragment {
 
     private void launchFTXFlow() {
         if (isAdded()) {
-            startActivity(UserProfileActivity.intent((appContext)));
+            startActivity(UserProfileActivity.clearIntent((appContext)));
         }
     }
 
@@ -416,7 +418,7 @@ public class LoginFragment extends BagAuthBaseFragment {
                     errorMessage = "Network error: " + transientEx.getMessage();
                 } catch (UserRecoverableAuthException e) {
                     Log.w(TAG, "Recoverable Google OAuth error: " + e.toString());
-                /* We probably need to ask for permissions, so start the intent if there is none pending */
+                /* We probably need to ask for permissions, so start the clearIntent if there is none pending */
                     if (!googleIntentInProgress) {
                         googleIntentInProgress = true;
                         Intent recover = e.getIntent();

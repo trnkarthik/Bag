@@ -2,6 +2,7 @@ package com.getmebag.bag.androidspecific;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.view.LayoutInflater;
 
 import com.firebase.client.Firebase;
 import com.getmebag.bag.R;
@@ -56,17 +57,22 @@ public class AndroidModule {
                 .build();
     }
 
-    @Provides @Singleton
+    @Provides
+    @Singleton
     public SharedPreferences provideSharedPreferences(@ForApplication Context app) {
         return app.getSharedPreferences("bag", MODE_PRIVATE);
     }
 
-    @Provides @Singleton @MainFireBaseRef
+    @Provides
+    @Singleton
+    @MainFireBaseRef
     public Firebase provideMainFireBaseRef(@ForApplication Context app) {
         return new Firebase(app.getString(R.string.main_firebase_url));
     }
 
-    @Provides @Singleton @FireBaseUsersRef
+    @Provides
+    @Singleton
+    @FireBaseUsersRef
     public Firebase provideFireBaseUsersRef(@ForApplication Context app) {
         return new Firebase(app.getString(R.string.firebase_users_url));
     }
@@ -84,6 +90,13 @@ public class AndroidModule {
         return (BagUser) customObjectPreference.get(BagUser.class);
     }
 
+    @Provides LayoutInflater layoutInflater(@ForApplication Context app) {
+        return (LayoutInflater) app.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
+
+    @Provides Context context(@ForApplication Context context) {
+        return context;
+    }
 
 /*
     Not needed for now.This is how we should 'PROVIDE' android services

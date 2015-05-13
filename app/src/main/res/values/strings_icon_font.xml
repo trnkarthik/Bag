@@ -9,5 +9,9 @@
     <string name="icon_font_calendar">{fa-calendar}</string>
     <string name="icon_font_up">{fa-chevron-up}</string>
     <string name="icon_font_down">{fa-chevron-down}</string>
+    <string name="icon_font_question">{fa-question-circle}</string>
+    <string name="icon_font_location">{fa-map-marker}</string>
+    <string name="icon_font_invite_contacts">{fa-users}</string>
+    <string name="icon_font_logout">{fa-sign-out}</string>
 
 </resources>
