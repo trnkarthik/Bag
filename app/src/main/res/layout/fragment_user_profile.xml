@@ -29,7 +29,7 @@
             android:textSize="16sp"
             android:layout_centerHorizontal="true"
             android:layout_below="@id/profile_picture"
-            android:textColor="@color/default_theme_color"
+            android:textColor="@color/default_theme_dark_text_color"
             android:layout_marginTop="@dimen/common_three_forth_margin"
             android:layout_marginBottom="@dimen/common_three_forth_margin"
             android:fontFamily="sans-serif"
@@ -43,19 +43,10 @@
         android:background="#ffebebeb"
         android:layout_weight="3">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:id="@+id/profile_listview_section_separator"
-            android:layout_gravity="top"
-            android:layout_alignParentTop="true"
-            android:background="#ffcecece" />
-
         <ListView
             android:id="@+id/profile_listview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/profile_listview_section_separator"
             android:divider="@null"
             android:dividerHeight="0dp"/>
 

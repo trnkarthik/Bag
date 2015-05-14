@@ -13,5 +13,6 @@
     <string name="icon_font_location">{fa-map-marker}</string>
     <string name="icon_font_invite_contacts">{fa-users}</string>
     <string name="icon_font_logout">{fa-sign-out}</string>
+    <string name="icon_font_warning">{fa-exclamation-triangle}</string>
 
 </resources>

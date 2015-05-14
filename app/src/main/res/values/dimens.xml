@@ -8,6 +8,6 @@
     <dimen name="common_three_forth_margin">12dp</dimen>
     <dimen name="common_half_margin">8dp</dimen>
     <dimen name="common_quarter_margin">4dp</dimen>
-    <dimen name="common_mini_margin">4dp</dimen>
+    <dimen name="common_mini_margin">2dp</dimen>
 
 </resources>
