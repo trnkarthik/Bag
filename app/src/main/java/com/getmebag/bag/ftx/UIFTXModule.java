@@ -7,6 +7,7 @@ import com.getmebag.bag.androidspecific.AndroidModule;
 import com.getmebag.bag.androidspecific.prefs.BooleanPreference;
 import com.getmebag.bag.annotations.IsThisFirstTimeUse;
 import com.getmebag.bag.annotations.IsThisLoggedInFirstTimeUse;
+import com.getmebag.bag.dialog.DialogModule;
 
 import javax.inject.Singleton;
 
@@ -19,6 +20,7 @@ import dagger.Provides;
 @Module(
         includes = {
                 AndroidModule.class,
+                DialogModule.class,
         },
         injects = {
                 FTXTutorialActivity.class,

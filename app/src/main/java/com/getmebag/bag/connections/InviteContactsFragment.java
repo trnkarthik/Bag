@@ -91,8 +91,8 @@ public class InviteContactsFragment extends BagAuthBaseFragment {
         frequentContacts = contactsProvider.getFrequentContacts(10);
         allContacts = contactsProvider.getAllContacts();
 
-        //Integer for Fragment Header
-        contactListItemList.add(1);
+        //Fragment Manager for Fragment Header
+        contactListItemList.add(getActivity().getSupportFragmentManager());
 
         //String for section Header
         if (frequentContacts.size() > 0) {

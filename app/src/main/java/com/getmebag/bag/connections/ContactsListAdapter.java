@@ -2,6 +2,7 @@ package com.getmebag.bag.connections;
 
 import android.content.Context;
 import android.net.Uri;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,8 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.getmebag.bag.R;
+import com.getmebag.bag.annotations.ViewPagerDialogFragmentRef;
+import com.getmebag.bag.dialog.ViewPagerDialogFragment;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,6 +33,10 @@ public class ContactsListAdapter extends ArrayAdapter<Object> {
 
     ArrayList<Object> items;
     private LayoutInflater layoutInflater;
+
+    @Inject
+    @ViewPagerDialogFragmentRef
+    ViewPagerDialogFragment viewPagerDialogFragment;
 
     @Inject
     public ContactsListAdapter(Context context, final LayoutInflater layoutInflater) {
@@ -109,12 +116,35 @@ public class ContactsListAdapter extends ArrayAdapter<Object> {
             case 3:
                 convertView = layoutInflater.inflate(R.layout.header_fragment_invite_contacts,
                         parent, false);
+                setUpMainHeaderView(position, convertView);
                 return convertView;
 
             default:
                 return convertView;
 
         }
+    }
+
+    private void setUpMainHeaderView(int position, View convertView) {
+        TextView whyShouldIInviteLink = (TextView) convertView.
+                findViewById(R.id.invite_contacts_big_header_why_invite_link);
+        TextView whyShouldIInviteIcon = (TextView) convertView.
+                findViewById(R.id.invite_contacts_big_header_why_invite_link_icon);
+        whyShouldIInviteLink.
+                setOnClickListener(whyShouldIInviteOnClickListener(
+                        (FragmentManager) getItem(position)));
+        whyShouldIInviteIcon.
+                setOnClickListener(whyShouldIInviteOnClickListener(
+                        (FragmentManager) getItem(position)));
+    }
+
+    private View.OnClickListener whyShouldIInviteOnClickListener(final FragmentManager supportFragmentManager) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showEditDialog(supportFragmentManager);
+            }
+        };
     }
 
 
@@ -174,6 +204,11 @@ public class ContactsListAdapter extends ArrayAdapter<Object> {
         @InjectView(R.id.contacts_list_header_text)
         TextView headerText;
 
+    }
+
+    private void showEditDialog(FragmentManager supportFragmentManager) {
+        viewPagerDialogFragment.show(supportFragmentManager,
+                getContext().getString(R.string.dialog_invite_contacts_why_should_i_invite));
     }
 
 }

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="dialog_invite_contacts_why_should_i_invite">
+        INVITE_CONTACTS_WHY_SHOULD_I_INVITE_DIALOG</string>
+
+</resources>
