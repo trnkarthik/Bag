@@ -1,25 +1,29 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/default_theme_accent3"
     tools:context="com.getmebag.bag.connections.InviteContactsActivity.InviteContactsFragment">
 
     <ListView
         android:id="@+id/contacts_listview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:divider="@null"
+        android:dividerHeight="0dp" />
 
     <Button
+        android:id="@+id/invite_contacts_finish"
+        style="@style/TextStyle.GeneralButton"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_gravity="bottom"
-        android:id="@+id/invite_contacts_finish"
-        android:text="@string/finish"
-        style="@style/TextStyle.GeneralButton"
+        android:layout_weight="0"
         android:background="@drawable/big_button_tap_state"
-        android:visibility="visible"
-        android:layout_weight="0"/>
+        android:text="@string/finish"
+        android:visibility="visible" />
 
 </LinearLayout>

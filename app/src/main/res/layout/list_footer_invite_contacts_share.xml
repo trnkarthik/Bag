@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/common_list_item_tap_state"
+    android:columnCount="2"
+    android:minHeight="74dp"
+    android:paddingLeft="@dimen/common_margin"
+    android:paddingRight="@dimen/common_margin"
+    android:rowCount="2">
+
+    <IconTextView
+        android:id="@+id/invite_contacts_footer_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_column="0"
+        android:layout_row="0"
+        android:gravity="center"
+        android:minHeight="74dp"
+        android:minWidth="64dp"
+        android:text="@string/icon_font_share"
+        android:textColor="@color/default_theme_static_text_color"
+        android:textSize="24sp"
+        tools:text="a" />
+
+    <TextView
+        android:id="@+id/invite_contacts_footer_title"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="@dimen/common_half_margin"
+        android:layout_marginLeft="@dimen/common_quarter_margin"
+        android:layout_marginRight="@dimen/common_mini_margin"
+        android:fontFamily="sans-serif"
+        android:gravity="center_vertical"
+        android:text="@string/invite_contacts_share_text"
+        android:textColor="@color/default_theme_dark_text_color"
+        android:textSize="18sp" />
+
+    <View
+        android:id="@+id/invite_contacts_footer_separator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_column="0"
+        android:layout_columnSpan="2"
+        android:layout_gravity="bottom"
+        android:layout_row="1"
+        android:background="#ffd7d7d7" />
+
+</GridLayout>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/default_theme_accent3"
+    android:minHeight="32dp"
+    android:paddingLeft="@dimen/common_margin"
+    android:paddingRight="@dimen/common_margin">
+
+    <TextView
+        android:id="@+id/contacts_list_header_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:textColor="@color/default_theme_dark_text_color"
+        android:textSize="16sp"
+        android:fontFamily="sans-serif"
+        android:layout_marginRight="@dimen/common_quarter_margin"
+        tools:text="@string/contacts_no_contacts_share_app" />
+
+    <View
+        android:id="@+id/contacts_list_header_bottom_separator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/default_theme_static_icon_color" />
+
+</RelativeLayout>

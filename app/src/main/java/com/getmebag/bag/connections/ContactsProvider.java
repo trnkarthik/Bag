@@ -6,16 +6,22 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
-import android.text.TextUtils;
+import android.util.Patterns;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
+
+import javax.inject.Inject;
 
 public class ContactsProvider {
 
-    private Uri QUERY_URI = ContactsContract.Contacts.CONTENT_STREQUENT_URI;
+    private Uri FREQUENT_QUERY_URI = ContactsContract.Contacts.CONTENT_STREQUENT_URI;
+    private Uri ALL_CONTACTS_QUERY_URI = ContactsContract.Contacts.CONTENT_URI;
+
     private String CONTACT_ID = ContactsContract.Contacts._ID;
     private String DISPLAY_NAME = ContactsContract.Contacts.DISPLAY_NAME;
+    private String PHOTO_THUMBNAIL_URL = ContactsContract.Contacts.PHOTO_THUMBNAIL_URI;
     private Uri EMAIL_CONTENT_URI = ContactsContract.CommonDataKinds.Email.CONTENT_URI;
     private String EMAIL_CONTACT_ID = ContactsContract.CommonDataKinds.Email.CONTACT_ID;
     private String EMAIL_DATA = ContactsContract.CommonDataKinds.Email.DATA;
@@ -25,65 +31,102 @@ public class ContactsProvider {
     private String PHONE_CONTACT_ID = ContactsContract.CommonDataKinds.Phone.CONTACT_ID;
     private String STARRED_CONTACT = ContactsContract.Contacts.STARRED;
     private ContentResolver contentResolver;
+    private int count = 0;
+    final Pattern numberPattern = Patterns.PHONE;
 
+    @Inject
     public ContactsProvider(Context context) {
         contentResolver = context.getContentResolver();
     }
 
-    public List<Contact> getFrequentContacts() {
-        List<Contact> contactList = new ArrayList<Contact>();
-        String[] projection = new String[]{CONTACT_ID, DISPLAY_NAME, HAS_PHONE_NUMBER, STARRED_CONTACT};
-        String selection = null;
-        Cursor cursor = contentResolver.query(QUERY_URI, projection, selection, null, null);
-
+    public List<ContactListItem> getAllContacts() {
+        List<ContactListItem> contactListItemList = new ArrayList<ContactListItem>();
+        String[] projection = new String[]{CONTACT_ID, DISPLAY_NAME, HAS_PHONE_NUMBER,
+                STARRED_CONTACT, PHOTO_THUMBNAIL_URL};
+        String selection = HAS_PHONE_NUMBER + "!= 0";
+        Cursor cursor = contentResolver.query(ALL_CONTACTS_QUERY_URI, projection, selection, null,
+                "upper(" + ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + ") ASC");
         while (cursor.moveToNext()) {
-            Contact contact = getContact(cursor);
-            contactList.add(contact);
+            ContactListItem contactListItem = getContact(cursor);
+            if (numberPattern.matcher(contactListItem.phone).matches()) {
+                contactListItemList.add(contactListItem);
+            }
         }
 
         cursor.close();
-        return contactList;
+        return contactListItemList;
     }
 
-    private Contact getContact(Cursor cursor) {
+    public List<ContactListItem> getFrequentContacts(int numberOfContactsRequired) {
+        List<ContactListItem> contactListItemList = new ArrayList<ContactListItem>();
+        String[] projection = new String[]{CONTACT_ID, DISPLAY_NAME, HAS_PHONE_NUMBER,
+                STARRED_CONTACT, PHOTO_THUMBNAIL_URL};
+        String selection = HAS_PHONE_NUMBER + "!= 0";
+        Cursor cursor = contentResolver.query(FREQUENT_QUERY_URI, projection, selection, null, null);
+
+        //init count
+        count = 0;
+
+        while (cursor.moveToNext() && count < numberOfContactsRequired) {
+            ContactListItem contactListItem = getContact(cursor);
+            if (numberPattern.matcher(contactListItem.phone).matches()) {
+                contactListItemList.add(contactListItem);
+                count++;
+            }
+        }
+
+        cursor.close();
+        return contactListItemList;
+    }
+
+    private ContactListItem getContact(Cursor cursor) {
         String contactId = cursor.getString(cursor.getColumnIndex(CONTACT_ID));
         String name = (cursor.getString(cursor.getColumnIndex(DISPLAY_NAME)));
-        Uri uri = Uri.withAppendedPath(QUERY_URI, String.valueOf(contactId));
+        Uri uri = Uri.withAppendedPath(FREQUENT_QUERY_URI, String.valueOf(contactId));
+        String photoThumbnailUrl = (cursor.getString(cursor.getColumnIndex(PHOTO_THUMBNAIL_URL)));
 
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(uri);
         String intentUriString = intent.toUri(0);
 
-        Contact contact = new Contact();
-        contact.id = Integer.valueOf(contactId);
-        contact.name = name;
-        contact.uriString = intentUriString;
+        ContactListItem contactListItem = new ContactListItem();
+        contactListItem.id = Integer.valueOf(contactId);
+        contactListItem.name = name;
+        contactListItem.uriString = intentUriString;
+        contactListItem.photoThumbnailUrl = photoThumbnailUrl;
 
-        getPhone(cursor, contactId, contact);
-        getEmail(contactId, contact);
-        return contact;
+        getPhone(cursor, contactId, contactListItem);
+
+        //TODO : We dont need email for now
+        //getEmail(contactId, contactListItem);
+
+        return contactListItem;
     }
 
-    private void getEmail(String contactId, Contact contact) {
-        Cursor emailCursor = contentResolver.query(EMAIL_CONTENT_URI, null, EMAIL_CONTACT_ID + " = ?", new String[]{contactId}, null);
-        while (emailCursor.moveToNext()) {
-            String email = emailCursor.getString(emailCursor.getColumnIndex(EMAIL_DATA));
-            if (!TextUtils.isEmpty(email)) {
-                contact.email = email;
-            }
-        }
-        emailCursor.close();
-    }
-
-    private void getPhone(Cursor cursor, String contactId, Contact contact) {
+    private void getPhone(Cursor cursor, String contactId, ContactListItem contactListItem) {
         int hasPhoneNumber = Integer.parseInt(cursor.getString(cursor.getColumnIndex(HAS_PHONE_NUMBER)));
         if (hasPhoneNumber > 0) {
             Cursor phoneCursor = contentResolver.query(PHONE_CONTENT_URI, null, PHONE_CONTACT_ID + " = ?", new String[]{contactId}, null);
             while (phoneCursor.moveToNext()) {
                 String phoneNumber = phoneCursor.getString(phoneCursor.getColumnIndex(PHONE_NUMBER));
-                contact.phone = phoneNumber;
+                contactListItem.phone = phoneNumber;
             }
             phoneCursor.close();
         }
     }
+
+    /*
+    TODO : We dont need email for now
+    private void getEmail(String contactId, ContactListItem contactListItem) {
+        Cursor emailCursor = contentResolver.query(EMAIL_CONTENT_URI, null, EMAIL_CONTACT_ID + " = ?", new String[]{contactId}, null);
+        while (emailCursor.moveToNext()) {
+            String email = emailCursor.getString(emailCursor.getColumnIndex(EMAIL_DATA));
+            if (!TextUtils.isEmpty(email)) {
+                contactListItem.email = email;
+            }
+        }
+        emailCursor.close();
+    }
+*/
+
 }

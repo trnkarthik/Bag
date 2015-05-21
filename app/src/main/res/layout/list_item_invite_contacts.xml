@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="74dp"
+    android:background="@drawable/common_list_item_tap_state"
+    android:minHeight="74dp"
+    android:paddingLeft="@dimen/common_three_forth_margin"
+    android:paddingRight="@dimen/common_three_forth_margin">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical">
+
+        <IconTextView
+            android:id="@+id/contacts_list_main_icon_alt"
+            android:layout_width="58dp"
+            android:layout_height="58dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:gravity="center"
+            android:layout_gravity="center_vertical"
+            android:minHeight="58dp"
+            android:minWidth="58dp"
+            android:background="@drawable/circular_textview"
+            android:textColor="@color/default_theme_actionbar_text_color"
+            android:textSize="29sp"
+            android:textAllCaps="true"
+            tools:text="K" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/contacts_list_main_icon"
+            android:layout_width="58dp"
+            android:layout_height="58dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:gravity="center"
+            android:layout_gravity="center_vertical"
+            android:minHeight="58dp"
+            android:minWidth="58dp"
+            android:src="@drawable/temp"
+            app:border_color="#ffcecece"
+            app:border_width="1dp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:layout_marginEnd="@dimen/common_half_margin"
+            android:layout_marginLeft="@dimen/common_half_margin"
+            android:layout_marginRight="@dimen/common_half_margin"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/contacts_list_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:text="Karthik Tangirala"
+                android:singleLine="true"
+                android:maxLines="1"
+                android:textColor="@color/default_theme_dark_text_color"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/contacts_list_phone_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:text="123-435-1234"
+                android:textColor="@color/default_theme_static_text_color"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/contacts_list_invite_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center_vertical"
+            android:padding="8dp"
+            android:background="@drawable/big_button_tap_state"
+            android:minWidth="64dp"
+            android:textColor="@color/default_theme_actionbar_text_color"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:layout_marginRight="@dimen/common_quarter_margin"
+            android:text="INVITE" />
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/contacts_list_bottom_separator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentBottom="true"
+        android:background="#ffd7d7d7" />
+
+</RelativeLayout>

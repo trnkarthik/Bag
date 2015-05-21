@@ -8,6 +8,7 @@
     <color name="default_theme_accent4">#ffdfdfdf</color>
     <color name="default_theme_warning_messages">#ffae5257</color>
     <color name="default_theme_static_text_color">#ff7f7f7f</color>
+    <color name="gray01">#ff9c9c9c</color>
     <color name="default_theme_static_icon_color">#ff3a3a3a</color>
     <color name="default_theme_dark_text_color">#ff303030</color>
 </resources>

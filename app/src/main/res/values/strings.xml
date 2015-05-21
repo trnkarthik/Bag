@@ -16,7 +16,14 @@
     <string name="profile_date_placeholder">dd/mm/yyyy</string>
     <string name="next">Next</string>
     <string name="finish">Finish</string>
-    <string name="title_activity_invite_contacts">InviteContactsActivity</string>
+    <string name="title_activity_invite_contacts">Invite Contacts</string>
     <string name="ftx_username_cannot_be_changed_later">Username cannot be changed later.</string>
+
+    <string name="contacts_invite">INVITE</string>
+    <string name="contacts_all_contacts_header">All Contacts</string>
+    <string name="contacts_frequent_contacts">Frequent Contacts</string>
+    <string name="contacts_no_contacts_share_app">No Contacts Found</string>
+    <string name="invite_contacts_share_text">Share this app</string>
+    <string name="invite_contacts_big_header_main_message">Unlock the true potential of Bag by inviting your friends.</string>
 
 </resources>
