@@ -6,7 +6,6 @@ import android.os.Bundle;
 
 import com.getmebag.bag.R;
 import com.getmebag.bag.base.BagAuthBaseActivity;
-import com.getmebag.bag.ftx.FTXLocationActivity;
 
 import javax.inject.Inject;
 
@@ -27,6 +26,7 @@ public class InviteContactsActivity extends BagAuthBaseActivity {
         setContentView(R.layout.activity_invite_contacts);
         addFragmentToContentView(savedInstanceState, R.id.container,
                 inviteContactsFragment);
+        enableActionBarUpIcon(!isThisLoggedInFTX.get());
     }
 
     @Override

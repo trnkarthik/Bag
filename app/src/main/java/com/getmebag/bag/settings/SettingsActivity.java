@@ -24,6 +24,7 @@ public class SettingsActivity extends BagAuthBaseActivity {
         setContentView(R.layout.activity_settings);
         addFragmentToContentView(savedInstanceState, R.id.container,
                 settingsFragment);
+        enableActionBarUpIcon(true);
     }
 
 }

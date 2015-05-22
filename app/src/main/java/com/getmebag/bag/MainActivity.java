@@ -10,9 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.getmebag.bag.androidspecific.prefs.BooleanPreference;
 import com.getmebag.bag.annotations.CurrentUser;
-import com.getmebag.bag.annotations.IsThisLoggedInFirstTimeUse;
 import com.getmebag.bag.base.BagAuthBaseActivity;
 import com.getmebag.bag.base.BagAuthBaseFragment;
 import com.getmebag.bag.model.BagUser;
@@ -81,11 +79,6 @@ public class MainActivity extends BagAuthBaseActivity {
         @Inject
         @CurrentUser
         BagUser currentUser;
-
-        @Inject
-        @IsThisLoggedInFirstTimeUse
-        BooleanPreference isThisLoggedInFTX;
-
 
         public MainFragment() {
         }

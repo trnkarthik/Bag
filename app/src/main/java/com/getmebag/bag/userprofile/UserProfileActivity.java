@@ -36,6 +36,7 @@ public class UserProfileActivity extends BagAuthBaseActivity {
         addFragmentToContentView(savedInstanceState, R.id.container,
                 userProfileFragment);
         setActionBarIcon(null);
+        enableActionBarUpIcon(!isThisLoggedInFTX.get());
     }
 
 /*

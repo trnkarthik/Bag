@@ -14,8 +14,10 @@ import com.facebook.SessionState;
 import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.getmebag.bag.MainActivity;
+import com.getmebag.bag.androidspecific.prefs.BooleanPreference;
 import com.getmebag.bag.annotations.FireBaseUsersRef;
 import com.getmebag.bag.annotations.ForApplication;
+import com.getmebag.bag.annotations.IsThisLoggedInFirstTimeUse;
 import com.getmebag.bag.annotations.MainFireBaseRef;
 import com.getmebag.bag.app.BagApplication;
 import com.google.android.gms.common.ConnectionResult;
@@ -38,6 +40,10 @@ public class BagAuthBaseFragment extends Fragment implements
     private static final String TAG = MainActivity.class.getSimpleName();
 
     public ProgressDialog progressDialog;
+
+    @Inject
+    @IsThisLoggedInFirstTimeUse
+    public BooleanPreference isThisLoggedInFTX;
 
     @Inject
     @MainFireBaseRef
@@ -175,5 +181,4 @@ public class BagAuthBaseFragment extends Fragment implements
             }
         }
     }
-
 }

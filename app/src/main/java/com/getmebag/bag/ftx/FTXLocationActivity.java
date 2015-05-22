@@ -26,6 +26,7 @@ public class FTXLocationActivity extends BagAuthBaseActivity {
         setContentView(R.layout.activity_ftxlocation);
         addFragmentToContentView(savedInstanceState, R.id.container,
                 ftxLocationFragment);
+        enableActionBarUpIcon(!isThisLoggedInFTX.get());
     }
 
     @Override

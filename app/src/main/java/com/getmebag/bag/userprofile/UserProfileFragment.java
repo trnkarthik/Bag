@@ -16,9 +16,7 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 import com.getmebag.bag.R;
-import com.getmebag.bag.androidspecific.prefs.BooleanPreference;
 import com.getmebag.bag.annotations.CurrentUser;
-import com.getmebag.bag.annotations.IsThisLoggedInFirstTimeUse;
 import com.getmebag.bag.base.BagAuthBaseFragment;
 import com.getmebag.bag.ftx.FTXLocationActivity;
 import com.getmebag.bag.model.BagUser;
@@ -57,10 +55,6 @@ public class UserProfileFragment extends BagAuthBaseFragment {
 
     @InjectView(R.id.profile_next)
     Button nextButton;
-
-    @Inject
-    @IsThisLoggedInFirstTimeUse
-    BooleanPreference isThisLoggedInFTX;
 
     @Inject
     @CurrentUser

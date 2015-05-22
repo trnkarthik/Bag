@@ -11,8 +11,6 @@ import android.widget.Toast;
 
 import com.getmebag.bag.MainActivity;
 import com.getmebag.bag.R;
-import com.getmebag.bag.androidspecific.prefs.BooleanPreference;
-import com.getmebag.bag.annotations.IsThisLoggedInFirstTimeUse;
 import com.getmebag.bag.base.BagAuthBaseFragment;
 
 import java.util.ArrayList;
@@ -34,10 +32,6 @@ import static java.lang.Boolean.TRUE;
 public class InviteContactsFragment extends BagAuthBaseFragment {
 
     ListView listView;
-
-    @Inject
-    @IsThisLoggedInFirstTimeUse
-    BooleanPreference isThisLoggedInFTX;
 
     @InjectView(R.id.invite_contacts_finish)
     Button finishButton;
