@@ -54,10 +54,6 @@ public class FTXLocationFragment extends BagAuthBaseFragment {
     @InjectView(R.id.ftx_location_next)
     Button nextButton;
 
-    @Inject
-    @IsThisLoggedInFirstTimeUse
-    BooleanPreference isThisLoggedInFTX;
-
     private boolean isLocationFound = false;
     private GoogleMap map;
 
