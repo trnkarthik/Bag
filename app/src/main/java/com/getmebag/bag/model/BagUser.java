@@ -31,6 +31,10 @@ public class BagUser {
         return providerId;
     }
 
+    public String getUniqueId() {
+        return provider + ":" + providerId;
+    }
+
     public String getToken() {
         return token;
     }

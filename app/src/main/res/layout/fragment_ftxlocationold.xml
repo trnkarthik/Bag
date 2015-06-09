@@ -1,0 +1,154 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.getmebag.bag.ftx.FTXLocationActivity.FTXLocationFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_weight="0"
+        android:background="@color/default_theme_accent2">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/profile_picture"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/common_half_margin"
+            android:layout_marginLeft="@dimen/common_margin"
+            android:layout_marginRight="@dimen/common_half_margin"
+            android:layout_marginStart="@dimen/common_margin"
+            android:src="@drawable/temp"
+            app:border_color="#ffcecece"
+            app:border_width="1dp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/common_half_margin"
+            android:layout_marginStart="@dimen/common_half_margin"
+            android:layout_toEndOf="@id/profile_picture"
+            android:layout_toRightOf="@id/profile_picture"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/ftx_location_username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/common_three_forth_margin"
+                android:fontFamily="sans-serif"
+                android:text="Karthik Tangirala"
+                android:textColor="@color/default_theme_color"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/ftx_location_username2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="@dimen/common_three_forth_margin"
+                android:layout_marginTop="@dimen/common_quarter_margin"
+                android:fontFamily="sans-serif"
+                android:text="\@trnkarthik"
+                android:textColor="@color/default_theme_color"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+        <View
+            android:id="@+id/location_listview_section_separator"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="bottom"
+            android:background="#ffcecece" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/default_theme_color"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textView"
+            style="@style/TextStyle.GeneralButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingLeft="6dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            android:paddingRight="2dp"
+            android:text="@string/fetching_current_zipcode" />
+
+        <IconTextView
+            android:id="@+id/icon"
+            style="@style/TextStyle.GeneralButton"
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:minWidth="30dp"
+            android:text="@string/icon_font_edit"
+            android:textSize="18sp"
+            tools:text="a" />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#ffebebeb">
+
+        <com.getmebag.bag.ui.BagCircleButton
+            android:id="@+id/button0"
+            android:layout_width="match_parent"
+            android:layout_height="80dip"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="8dip"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_communication_location_on"
+            app:cb_color="@color/default_theme_color"
+            tools:visibility="gone" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/buttonshadow"
+            android:layout_width="match_parent"
+            android:layout_height="80dip"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="8dip"
+            android:src="#7500574d"
+            tools:visibility="gone" />
+
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/mapview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:visibility="gone"
+            tools:visibility="gone" />
+
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/ftx_location_next"
+        style="@style/TextStyle.GeneralButton"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="bottom"
+        android:layout_weight="0"
+        android:background="@drawable/big_button_tap_state"
+        android:gravity="center"
+        android:text="@string/next"
+        android:visibility="visible" />
+
+</LinearLayout>

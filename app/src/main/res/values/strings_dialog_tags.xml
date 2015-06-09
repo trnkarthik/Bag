@@ -3,5 +3,17 @@
 
     <string name="dialog_invite_contacts_why_should_i_invite">
         INVITE_CONTACTS_WHY_SHOULD_I_INVITE_DIALOG</string>
+    <string name="dialog_location_zipcode">
+        LOCATION_ZIPCODE_DIALOG</string>
+    <string name="dialog_user_profile_date_picker">
+        USER_PROFILE_DATE_PICKER_DIALOG</string>
+    <string name="dialog_user_profile_username_selector">
+        USER_PROFILE_USERNAME_SELECTOR_DIALOG</string>
+    <string name="dialog_user_profile_phone_number_selector">
+        USER_PROFILE_PHONE_NUMBER_SELECTOR_DIALOG</string>
+    <string name="dialog_common_alert">
+        COMMON_ALERT_DIALOG</string>
+    <string name="dialog_common_error">
+        COMMON_ERROR_DIALOG</string>
 
 </resources>

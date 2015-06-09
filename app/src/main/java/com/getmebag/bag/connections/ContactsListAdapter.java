@@ -10,7 +10,6 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.getmebag.bag.R;
-import com.getmebag.bag.annotations.ViewPagerDialogFragmentRef;
 import com.getmebag.bag.dialog.ViewPagerDialogFragment;
 
 import java.util.ArrayList;
@@ -35,7 +34,6 @@ public class ContactsListAdapter extends ArrayAdapter<Object> {
     private LayoutInflater layoutInflater;
 
     @Inject
-    @ViewPagerDialogFragmentRef
     ViewPagerDialogFragment viewPagerDialogFragment;
 
     @Inject

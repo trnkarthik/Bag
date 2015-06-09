@@ -14,10 +14,12 @@
     <string name="title_activity_user_profile">Profile</string>
 
     <string name="profile_date_placeholder">dd/mm/yyyy</string>
+    <string name="select_your_birthday">Select your birthday</string>
     <string name="next">Next</string>
     <string name="finish">Finish</string>
     <string name="title_activity_invite_contacts">Invite Contacts</string>
     <string name="ftx_username_cannot_be_changed_later">Username cannot be changed later.</string>
+    <string name="ftx_username_looks_great">%1$s looks great!</string>
 
     <string name="contacts_invite">INVITE</string>
     <string name="contacts_all_contacts_header">All Contacts</string>
@@ -25,5 +27,16 @@
     <string name="contacts_no_contacts_share_app">No Contacts Found</string>
     <string name="invite_contacts_share_text">Share this app</string>
     <string name="invite_contacts_big_header_main_message">Unlock the true potential of Bag by inviting your friends.</string>
+    <string name="fetch_location_automatically_button">Get current ZIP Code</string>
+    <string name="update_location_automatically_button">Update current ZIP Code</string>
+    <string name="enter_zipcode_manually_button">Enter current ZIP Code</string>
+    <string name="update_zipcode_manually_button">Enter new ZIP Code</string>
+    <string name="location_your_zip_code">Your ZIP Code : %1$s</string>
+    <string name="location_your_current_zip_code">Your Current ZIP Code : %1$s</string>
+    <string name="location_zip_code">ZIP Code : %1$s</string>
+    <string name="location_no_zip_code">We currently do not  have your ZIP Code.</string>
+    <string name="location_confirm_zipcode">Confirm ZIP Code</string>
+    <string name="user_phone_number_add_later"><![CDATA[You can add your phone number later in <b><i>Profile Screen</i></b> under <b><i>Settings</i></b>.]]></string>
+    <string name="user_birthday_add_later"><![CDATA[You can add your birthday later in <b><i>Profile Screen</i></b> under <b><i>Settings</i></b>.]]></string>
 
 </resources>

@@ -5,7 +5,14 @@
     <string name="ftx_log_in">Log In</string>
 
     <!--Location screen-->
-    <string name="fetching_your_location">Fetching your Location</string>
     <string name="ftx_optional">(Optional)</string>
+    <string name="choose_a_username">Choose a username</string>
+    <string name="enter_your_phone_number">Enter your phone number</string>
+    <string name="username_bullet">&#8226;</string>
+    <string name="username_rule1">A username can only contain <b>lowercase alphanumeric characters (letters a&#8211;z, numbers 0&#8211;9)</b> with the exception of <b>underscores</b>.</string>
+    <string name="username_rule2">Username should contain a minimum of 3 characters and not more than 20 characters.</string>
+    <string name="username_min_chars_rule">Username should contain a minimum of 3 characters.</string>
+    <string name="username_max_chars_rule">Username should not contain more than 20 characters.</string>
+    <string name="skip_this_for_now"><u><i>Skip this for now</i></u></string>
 
 </resources>

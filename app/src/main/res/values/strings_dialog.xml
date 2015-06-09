@@ -7,5 +7,13 @@
     <string name="more_info_cta_phone_number">Your phone number helps your friends to easily find you on bag</string>
 
     <string name="dialog_ok">OK</string>
+    <string name="dialog_yes">Yes</string>
+    <string name="dialog_cancel">Cancel</string>
+    <string name="please_enable_location_services">Please enable Location Services and GPS</string>
+    <string name="location_services_not_active">Location Services Not Active</string>
+    <string name="fetching_current_zipcode">Fetching current ZIP Code</string>
+    <string name="please_enter_a_valid_zipcode">Please enter a valid ZIP code</string>
+
+    <string name="dialog_username_done">Done</string>
 
 </resources>
