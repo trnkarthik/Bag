@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="default_theme_color">#009688</color>
+    <color name="default_theme_color_disabled">#64009688</color>
     <color name="default_theme_notification_bar">#FF00574D</color>
     <color name="default_theme_actionbar_text_color">#ffd4d4d4</color>
     <color name="default_theme_accent2">#ffd5d5d5</color>
     <color name="default_theme_accent3">#ffe9e9e9</color>
     <color name="default_theme_accent4">#ffdfdfdf</color>
     <color name="default_theme_warning_messages">#ffae5257</color>
+    <color name="default_theme_warning_solved">#ff5dae51</color>
     <color name="default_theme_static_text_color">#ff7f7f7f</color>
     <color name="gray01">#ff9c9c9c</color>
     <color name="default_theme_static_icon_color">#ff3a3a3a</color>
-    <color name="default_theme_dark_text_color">#ff303030</color>
+    <color name="default_theme_dark_text_color">#ff353535</color>
 </resources>

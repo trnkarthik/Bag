@@ -1,5 +1,6 @@
 package com.getmebag.bag.userprofile;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -18,6 +20,7 @@ import com.firebase.client.ValueEventListener;
 import com.getmebag.bag.R;
 import com.getmebag.bag.annotations.CurrentUser;
 import com.getmebag.bag.base.BagAuthBaseFragment;
+import com.getmebag.bag.dialog.DialogActionsListener;
 import com.getmebag.bag.ftx.FTXLocationActivity;
 import com.getmebag.bag.model.BagUser;
 import com.squareup.picasso.Picasso;
@@ -33,6 +36,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static android.text.TextUtils.isEmpty;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static com.getmebag.bag.userprofile.ProfileListAdapter.BIRTHDAY;
@@ -62,6 +66,8 @@ public class UserProfileFragment extends BagAuthBaseFragment {
 
     Map<String, Boolean> usernameAvailability = new HashMap<>();
 
+    private ProfileListAdapter adapter;
+
     @Inject
     public UserProfileFragment() {
     }
@@ -71,6 +77,10 @@ public class UserProfileFragment extends BagAuthBaseFragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_user_profile, container, false);
         ButterKnife.inject(this, rootView);
+
+        //Initially, next button should be disabled.
+        nextButton.setEnabled(false);
+
         setUpProfilePicture();
         setUpProfileEmail();
         setupProfileListView();
@@ -94,7 +104,7 @@ public class UserProfileFragment extends BagAuthBaseFragment {
 //        TODO : Sort this out
         Picasso.with(getActivity())
                 .load(currentUser.getCachedUserData().getProfilePictureURL())
-//                .placeholder(R.drawable.)
+                .placeholder(R.drawable.temp)
 //                .error(R.drawable.user_placeholder_error)
                 .into(profilePicture);
     }
@@ -106,8 +116,9 @@ public class UserProfileFragment extends BagAuthBaseFragment {
         addPhoneNumberRow(profileItems, 1);
         addBirthdayRow(profileItems, 2);
 
-        ProfileListAdapter adapter = new ProfileListAdapter(getActivity(),
-                R.layout.list_item_profile, profileItems, getActivity().getSupportFragmentManager());
+        adapter = new ProfileListAdapter(getActivity(),
+                R.layout.list_item_profile, profileItems,
+                getActivity().getSupportFragmentManager());
         profileListView.setAdapter(adapter);
     }
 
@@ -115,12 +126,32 @@ public class UserProfileFragment extends BagAuthBaseFragment {
         profileItems.add(position, new ProfileItem.Builder()
                 .setItemIndicationIcon(getString(R.string.icon_font_birthday))
                 .setItemDescription(getBirthDate())
-                .setItemActionIcon(getBirthDateActionIcon())
+                .setItemDescriptionColor(getBirthDateDescriptionColor())
+                .setItemActionIcon(getString(R.string.icon_font_calendar))
                 .setItemActionType(BIRTHDAY)
-                .setItemActionIconSize(24)
+                .setItemActionIconSize(getBirthDateActionIconSize())
                 .setItemCTAIcon(getString(R.string.icon_font_more_info))
+                .setDialogActionsListener(new DialogActionsListener() {
+                    @Override
+                    public void setOnDialogNeutralButtonListener(String date, Dialog dialog) {
+                        updateProfileItem(adapter.getItem(2), date);
+                        Toast.makeText(getActivity(), date, Toast.LENGTH_LONG).show();
+                        dialog.dismiss();
+                    }
+
+                    @Override
+                    public void setOnDialogPositiveButtonListener(String arg) {
+
+                    }
+
+                    @Override
+                    public void setOnDialogNegativeButtonListener(Dialog dialog) {
+
+                    }
+                })
                 .setItemCTADialogMessage(getString(R.string.more_info_cta_birthday))
                 .setItemCTADialogTitle(getString(R.string.more_info_cta_birthday_title))
+                .setItemDescriptionHeader(getString(R.string.ftx_optional))
                 .build());
     }
 
@@ -131,6 +162,24 @@ public class UserProfileFragment extends BagAuthBaseFragment {
                 .setItemActionIcon(getString(R.string.icon_font_edit))
                 .setItemActionType(PHONE_NUMBER)
                 .setItemCTAIcon(getString(R.string.icon_font_more_info))
+                .setDialogActionsListener(new DialogActionsListener() {
+                    @Override
+                    public void setOnDialogNeutralButtonListener(String phoneNumber, Dialog dialog) {
+                        updateProfileItem(adapter.getItem(1), phoneNumber);
+                        Toast.makeText(getActivity(), phoneNumber, Toast.LENGTH_LONG).show();
+                        dialog.dismiss();
+                    }
+
+                    @Override
+                    public void setOnDialogPositiveButtonListener(String arg) {
+
+                    }
+
+                    @Override
+                    public void setOnDialogNegativeButtonListener(Dialog dialog) {
+
+                    }
+                })
                 .setItemCTADialogMessage(getString(R.string.more_info_cta_phone_number))
                 .setItemCTADialogTitle(getString(R.string.more_info_cta_phone_number_title))
                 .setItemDescriptionHeader(getString(R.string.ftx_optional))
@@ -138,54 +187,79 @@ public class UserProfileFragment extends BagAuthBaseFragment {
     }
 
     private void addUserNameRow(ArrayList<ProfileItem> profileItems, int position) {
-        String currentUserNameWithOutSpaces = stripSpaces(currentUser.getCachedUserData().getUserName());
+//        String currentUserNameWithOutSpaces = stripSpaces(currentUser.getCachedUserData().getUserName());
         ProfileItem.Builder userNameBuilder = new ProfileItem.Builder();
         if (isThisLoggedInFTX.get()) {
-            checkIfBagUserAliasExistsInFireBase(currentUserNameWithOutSpaces);
+//            checkIfBagUserAliasExistsInFireBase(currentUserNameWithOutSpaces);
             userNameBuilder
                     .setItemIndicationIcon(getString(R.string.icon_font_user))
-                    .setItemDescription(stripSpaces(currentUser.getCachedUserData().getUserName()))
+                    .setItemDescription(getString(R.string.choose_a_username))
+                    .setCachedUserData(currentUser.getCachedUserData())
                     .setItemActionIcon(getString(R.string.icon_font_edit))
+                    .setItemDescriptionColor(getResources()
+                            .getColor(R.color.gray01))
                     .setItemActionType(USERNAME)
+                    .setDialogActionsListener(new DialogActionsListener() {
+
+                        @Override
+                        public void setOnDialogNeutralButtonListener(String username, Dialog dialog) {
+                            updateProfileItem(adapter.getItem(0), username);
+                            Toast.makeText(getActivity(), username, Toast.LENGTH_LONG).show();
+                            dialog.dismiss();
+                        }
+
+                        @Override
+                        public void setOnDialogPositiveButtonListener(String arg) {
+
+                        }
+
+                        @Override
+                        public void setOnDialogNegativeButtonListener(Dialog dialog) {
+
+                        }
+                    })
                     .setItemDescriptionHeader(getString(R.string.ftx_username_cannot_be_changed_later))
                     .setItemDescriptionHeaderColor(getResources()
                             .getColor(R.color.default_theme_warning_messages));
         } else {
             userNameBuilder
                     .setItemIndicationIcon(getString(R.string.icon_font_user))
-                    .setItemDescription(stripSpaces(currentUser.getBagUserName()));
+                    .setItemDescription(getString(R.string.choose_a_username));
         }
 
         profileItems.add(position, userNameBuilder.build());
     }
 
     private String getBirthDate() {
-        if (!TextUtils.isEmpty(currentUser.getCachedUserData().getBirthDate())) {
+        if (!isEmpty(currentUser.getCachedUserData().getBirthDate())) {
             return currentUser.getCachedUserData().getBirthDate();
         } else {
-            return getString(R.string.profile_date_placeholder);
+            return getString(R.string.select_your_birthday);
         }
     }
 
-    private String getBirthDateActionIcon() {
-        if (TextUtils.isEmpty(currentUser.getCachedUserData().getBirthDate())) {
-            return getString(R.string.icon_font_calendar);
+    private int getBirthDateDescriptionColor() {
+        if (isEmpty(currentUser.getCachedUserData().getBirthDate())) {
+            return getResources().getColor(R.color.gray01);
         } else {
-            return null;
+            return 0;
+        }
+    }
+
+    private int getBirthDateActionIconSize() {
+        if (isEmpty(currentUser.getCachedUserData().getBirthDate())) {
+            return 24;
+        } else {
+            return 20;
         }
     }
 
     private String getMyPhoneNumber() {
         TelephonyManager telephonyManager = (TelephonyManager) getActivity().getSystemService
                 (Context.TELEPHONY_SERVICE);
-        return telephonyManager.getLine1Number();
-    }
-
-    private String stripSpaces(String profileData) {
-        if (!TextUtils.isEmpty(profileData)) {
-            return profileData.replaceAll("\\s+", "");
-        }
-        return null;
+        return telephonyManager.getLine1Number() != null
+                ? telephonyManager.getLine1Number()
+                : getString(R.string.enter_your_phone_number);
     }
 
     private void checkIfBagUserAliasExistsInFireBase(final String alias) {
@@ -219,9 +293,90 @@ public class UserProfileFragment extends BagAuthBaseFragment {
 
     @OnClick(R.id.profile_next)
     public void profileScreenNextButton(View view) {
-        startActivity(FTXLocationActivity.intent(getActivity()));
-        getActivity().overridePendingTransition(R.anim.slide_in_right,
-                R.anim.slide_out_left);
+        if (view.isEnabled()) {
+            startActivity(FTXLocationActivity.intent(getActivity()));
+            getActivity().overridePendingTransition(R.anim.slide_in_right,
+                    R.anim.slide_out_left);
+        } else {
+            Toast.makeText(getActivity(), "Please choose a valid username", Toast.LENGTH_LONG).show();
+        }
     }
+
+    private void updateProfileItem(ProfileItem item, String newValue) {
+        if ((item.getItemActionType() == USERNAME && !isEmpty(newValue))
+                || (item.getItemActionType() == PHONE_NUMBER)
+                || (item.getItemActionType() == BIRTHDAY)) {
+
+            ProfileItem.Builder profileItemBuilder = new ProfileItem.Builder()
+                    .setItemIndicationIcon(item.getItemIndicationIcon())
+                    .setItemActionIcon(item.getItemActionIcon())
+                    .setItemActionIconSize(item.getItemActionIconSize())
+                    .setItemActionType(item.getItemActionType())
+                    .setItemCTAIcon(item.getItemCTAIcon())
+                    .setItemCTADialogMessage(item.getItemCTADialogMessage())
+                    .setItemCTADialogTitle(item.getItemCTADialogTitle())
+                    .setDialogActionsListener(item.getDialogActionsListener())
+                    .setCachedUserData(item.getCachedUserData());
+
+            //For Username
+            if (item.getItemActionType() == USERNAME) {
+                profileItemBuilder
+                        .setItemDescription(newValue)
+                        .setItemDescriptionColor(getResources()
+                                .getColor(R.color.default_theme_dark_text_color))
+
+                        .setItemDescriptionHeader(getString(R.string.ftx_username_looks_great,
+                                newValue))
+                        .setItemDescriptionHeaderColor(getResources()
+                                .getColor(R.color.default_theme_warning_solved));
+            } else {
+                profileItemBuilder
+                        .setItemDescription(item.getItemDescription())
+                        .setItemDescriptionColor(item.getItemDescriptionColor())
+                        .setItemDescriptionHeader(item.getItemDescriptionHeader())
+                        .setItemDescriptionHeaderColor(item.getItemDescriptionHeaderColor());
+            }
+
+            //For Phone Number
+            if (item.getItemActionType() == PHONE_NUMBER) {
+                if (TextUtils.isEmpty(newValue)) {
+                    profileItemBuilder
+                            .setItemDescription(getString(R.string.enter_your_phone_number))
+                            .setItemDescriptionColor(getResources().getColor(R.color.gray01));
+                } else {
+                    profileItemBuilder
+                            .setItemDescription(newValue)
+                            .setItemDescriptionColor(getResources()
+                                    .getColor(R.color.default_theme_dark_text_color));
+                }
+            }
+
+            //For Birthday
+            if (item.getItemActionType() == BIRTHDAY) {
+                if (TextUtils.isEmpty(newValue)) {
+                    profileItemBuilder
+                            .setItemDescription(getString(R.string.select_your_birthday))
+                            .setItemDescriptionColor(getResources().getColor(R.color.gray01));
+                } else {
+                    profileItemBuilder
+                            .setItemDescription(newValue)
+                            .setItemDescriptionColor(getResources()
+                                    .getColor(R.color.default_theme_dark_text_color));
+                }
+            }
+
+            adapter.remove(item);
+            adapter.insert(profileItemBuilder.build(), (item.getItemActionType() - 1));
+            adapter.notifyDataSetChanged();
+        }
+
+        if ((item.getItemActionType() == USERNAME) && !isEmpty(newValue)) {
+            nextButton.setEnabled(true);
+        } else if ((item.getItemActionType() == USERNAME) && isEmpty(newValue)) {
+            nextButton.setEnabled(false);
+        }
+
+    }
+
 
 }

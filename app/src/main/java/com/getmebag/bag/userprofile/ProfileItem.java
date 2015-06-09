@@ -1,5 +1,8 @@
 package com.getmebag.bag.userprofile;
 
+import com.getmebag.bag.dialog.DialogActionsListener;
+import com.getmebag.bag.model.CachedUserData;
+
 /**
  * Created by karthiktangirala on 4/19/15.
  */
@@ -7,6 +10,7 @@ public class ProfileItem {
     private final String itemIndicationIcon;
     private final String itemDescription;
     private final String itemDescriptionHeader;
+    private final int itemDescriptionColor;
     private final int itemDescriptionHeaderColor;
     private final String itemActionIcon;
     private final int itemActionType;
@@ -14,18 +18,23 @@ public class ProfileItem {
     private final String itemCTAIcon;
     private final String itemCTADialogMessage;
     private final String itemCTADialogTitle;
+    private final CachedUserData cachedUserData;
+    private final DialogActionsListener dialogActionsListener;
 
     public ProfileItem(Builder builder) {
         this.itemIndicationIcon = builder.itemIndicationIcon;
         this.itemDescription = builder.itemDescription;
         this.itemDescriptionHeader = builder.itemDescriptionHeader;
+        this.itemDescriptionColor = builder.itemDescriptionColor;
         this.itemDescriptionHeaderColor = builder.itemDescriptionHeaderColor;
         this.itemActionIcon = builder.itemActionIcon;
         this.itemActionType = builder.itemActionType;
         this.itemActionIconSize = builder.itemActionIconSize;
         this.itemCTAIcon = builder.itemCTAIcon;
         this.itemCTADialogMessage = builder.itemCTADialogMessage;
+        this.cachedUserData = builder.cachedUserData;
         this.itemCTADialogTitle = builder.itemCTADialogTitle;
+        this.dialogActionsListener = builder.dialogActionsListener;
     }
 
     public String getItemIndicationIcon() {
@@ -40,6 +49,9 @@ public class ProfileItem {
         return itemDescriptionHeader;
     }
 
+    public int getItemDescriptionColor() {
+        return itemDescriptionColor;
+    }
     public int getItemDescriptionHeaderColor() {
         return itemDescriptionHeaderColor;
     }
@@ -68,11 +80,20 @@ public class ProfileItem {
         return itemCTADialogTitle;
     }
 
+    public CachedUserData getCachedUserData() {
+        return cachedUserData;
+    }
+
+    public DialogActionsListener getDialogActionsListener() {
+        return dialogActionsListener;
+    }
+
     public static class Builder {
 
         private String itemIndicationIcon;
         private String itemDescription;
         private String itemDescriptionHeader;
+        private int itemDescriptionColor;
         private int itemDescriptionHeaderColor;
         private String itemActionIcon;
         private int itemActionType;
@@ -80,6 +101,8 @@ public class ProfileItem {
         private String itemCTAIcon;
         private String itemCTADialogMessage;
         private String itemCTADialogTitle;
+        private CachedUserData cachedUserData;
+        private DialogActionsListener dialogActionsListener;
 
         public Builder setItemIndicationIcon(String itemIndicationIcon) {
             this.itemIndicationIcon = itemIndicationIcon;
@@ -93,6 +116,11 @@ public class ProfileItem {
 
         public Builder setItemDescriptionHeader(String itemDescriptionHeader) {
             this.itemDescriptionHeader = itemDescriptionHeader;
+            return this;
+        }
+
+        public Builder setItemDescriptionColor(int itemDescriptionColor) {
+            this.itemDescriptionColor = itemDescriptionColor;
             return this;
         }
 
@@ -128,6 +156,16 @@ public class ProfileItem {
 
         public Builder setItemCTADialogTitle(String itemCTADialogTitle) {
             this.itemCTADialogTitle = itemCTADialogTitle;
+            return this;
+        }
+
+        public Builder setCachedUserData(CachedUserData cachedUserData) {
+            this.cachedUserData = cachedUserData;
+            return this;
+        }
+
+        public Builder setDialogActionsListener(DialogActionsListener listener) {
+            this.dialogActionsListener = listener;
             return this;
         }
 

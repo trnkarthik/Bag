@@ -10,6 +10,7 @@ buildscript {
     repositories {
         jcenter()
         mavenLocal()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
 
     dependencies {
@@ -77,17 +78,18 @@ dependencies {
     compile 'net.danlew:android.joda:2.4.0'
     compile 'com.etsy.android.grid:library:1.0.3'
     compile 'de.hdodenhof:circleimageview:1.2.0'
-    compile 'com.android.support:support-v4:21.0.3'
-    compile 'com.android.support:appcompat-v7:21.0.3'
+    compile 'com.android.support:support-v4:22.1.1'
+    compile 'com.android.support:appcompat-v7:22.1.1'
     compile 'com.android.support:support-v13:21.0.3'
-    compile 'com.google.android.gms:play-services-plus:6.5.87'
-    compile 'com.google.android.gms:play-services-maps:6.5.87'
+    compile 'com.google.android.gms:play-services-plus:7.3.0'
+    compile 'com.google.android.gms:play-services-maps:7.3.0'
     compile 'com.facebook.android:facebook-android-sdk:3.21.1'
     compile 'com.firebase:firebase-client-android:2.2.0'
     compile 'com.github.markushi:circlebutton:1.1'
 
     compile 'me.grantland:autofittextview:0.1.1'
     compile 'com.joanzapata.android:android-iconify:1.0.9'
+    compile 'org.lucasr.twowayview:twowayview:0.1.4'
 }
 
 android {

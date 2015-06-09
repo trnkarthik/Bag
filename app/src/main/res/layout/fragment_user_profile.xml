@@ -60,6 +60,7 @@
         android:text="@string/next"
         style="@style/TextStyle.GeneralButton"
         android:background="@drawable/big_button_tap_state"
+        tools:enabled="false"
         android:visibility="visible"
         android:layout_weight="0"/>
 

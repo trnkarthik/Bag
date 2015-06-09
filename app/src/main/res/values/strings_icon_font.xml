@@ -15,5 +15,9 @@
     <string name="icon_font_logout">{fa-sign-out}</string>
     <string name="icon_font_warning">{fa-exclamation-triangle}</string>
     <string name="icon_font_share">{fa-share-alt}</string>
+    <string name="icon_font_close">{fa-times}</string>
+    <string name="icon_font_close_circle">{fa-times-circle-o}</string>
+    <string name="icon_font_delete_light">{fa-trash-o}</string>
+    <string name="icon_font_delete_dark">{fa-trash}</string>
 
 </resources>

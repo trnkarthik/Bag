@@ -99,7 +99,33 @@ public class LoginFragment extends BagAuthBaseFragment {
         setUpGPlusButton();
         setUpFireBase();
 
+//        setMockDataAndLogin();
+
         return rootView;
+    }
+
+    // TODO : This is mock data. Remove this when not required
+    private void setMockDataAndLogin() {
+        CachedUserData cachedUserData = new CachedUserData.Builder()
+                .setUserName("Karthik Tangirala")
+                .setAccessToken("34567")
+                .setFirstName("Karthik")
+                .setEmail("karthik.trn@gmail.com")
+                .setLastName("Tangirala")
+                .setBirthDate("07/22/1991")
+                .build();
+
+        BagUser currentUser = new BagUser.Builder()
+                .setBagUserName("Karthik")
+                .setProvider("google")
+                .setProviderId("1")
+                .setToken("123423")
+                .setCachedUserData(cachedUserData)
+                .build();
+
+        currentUserPreference.set(currentUser);
+        isThisLoggedInFTX.set(true);
+        launchFTXFlow();
     }
 
     private void setUpFireBase() {
@@ -173,8 +199,11 @@ public class LoginFragment extends BagAuthBaseFragment {
     /**
      * Once a user is logged in, take the authData provided from Firebase and "use" it.
      */
+    //TODO
     private void setAuthenticatedUser(AuthData authData) {
-        if (!isAuthDataSet && authData != null) {
+        if (!isAuthDataSet && authData != null
+//                && (authData.getProviderData().get("email") != null)
+                ) {
             checkIfUserExistsAndSaveDataInFireBase(
                     appContext.getString(R.string.firebase_users_url) + authData.getUid(),
                     authData);
@@ -195,7 +224,7 @@ public class LoginFragment extends BagAuthBaseFragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() == null ||
-                        ((HashMap)dataSnapshot.getValue()).get("bagUserName") == null) {
+                        ((HashMap) dataSnapshot.getValue()).get("bagUserName") == null) {
                     //New Guy or BagUserName is not set yet.
                     isThisLoggedInFTX.set(true);
                     saveDataInFireBase(authData, true);

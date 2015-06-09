@@ -1,6 +1,5 @@
 package com.getmebag.bag.base;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -14,12 +13,14 @@ import com.facebook.SessionState;
 import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.getmebag.bag.MainActivity;
+import com.getmebag.bag.R;
 import com.getmebag.bag.androidspecific.prefs.BooleanPreference;
 import com.getmebag.bag.annotations.FireBaseUsersRef;
 import com.getmebag.bag.annotations.ForApplication;
 import com.getmebag.bag.annotations.IsThisLoggedInFirstTimeUse;
 import com.getmebag.bag.annotations.MainFireBaseRef;
 import com.getmebag.bag.app.BagApplication;
+import com.getmebag.bag.dialog.CommonAlertDialogFragment;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 
@@ -91,12 +92,16 @@ public class BagAuthBaseFragment extends Fragment implements
      */
     public void showErrorDialog(String message) {
         if (isAdded()) {
-            new AlertDialog.Builder(getActivity())
+            CommonAlertDialogFragment commonAlertDialogFragment = new CommonAlertDialogFragment.Builder()
                     .setTitle("Error")
                     .setMessage(message)
-                    .setPositiveButton(android.R.string.ok, null)
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .show();
+                    .setNeutralButtonText(getString(R.string.dialog_ok))
+                    .setDialogDismissOnNeutralButtonClick(true)
+                    .setCanceledOnTouchOutside(false)
+                    .build();
+
+            commonAlertDialogFragment.show(getActivity().getSupportFragmentManager(),
+                    getString(R.string.dialog_common_error));
         }
     }
 

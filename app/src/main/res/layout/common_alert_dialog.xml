@@ -1,0 +1,61 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minWidth="1000dp"
+    android:background="@color/default_theme_accent2"
+    android:orientation="vertical"
+    android:padding="@dimen/common_margin"
+    tools:context="com.getmebag.bag.ftx.FTXLocationFragment">
+
+    <TextView
+        android:id="@+id/common_dialog_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/common_half_margin"
+        android:fontFamily="sans-serif"
+        tools:text="Title"
+        android:textColor="@color/default_theme_color"
+        android:textSize="22sp" />
+
+    <TextView
+        android:id="@+id/common_dialog_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/common_margin"
+        android:fontFamily="sans-serif"
+        tools:text="You can add phone number later.Under settings in profile section."
+        android:singleLine="false"
+        android:textColor="@color/default_theme_static_icon_color"
+        android:textSize="20sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/common_margin"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+    <Button
+        android:id="@+id/common_dialog_positive_button"
+        style="@style/TextStyle.GeneralButton"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/big_button_tap_state"
+        android:layout_marginRight="@dimen/common_half_margin"
+        android:layout_weight="1"
+        tools:text="@string/dialog_ok"/>
+
+    <Button
+        android:id="@+id/common_dialog_negative_button"
+        style="@style/TextStyle.GeneralButton"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/disabled_button_tap_state"
+        android:layout_weight="1"
+        tools:text="@string/dialog_cancel"/>
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_vertical"
+    android:layout_margin="4dp"
+    tools:text="karthikt">
+
+    <TextView
+        android:id="@+id/list_item_suggestion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_corners_big_button_tap_state"
+        android:gravity="center_vertical"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        android:textSize="14sp"
+        android:textColor="@color/default_theme_actionbar_text_color"
+        tools:text="karthikt" />
+
+    <Space
+        android:layout_width="4dp"
+        android:layout_height="match_parent" />
+</LinearLayout>
