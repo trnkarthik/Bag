@@ -2,176 +2,96 @@ package com.getmebag.bag.userprofile;
 
 import com.getmebag.bag.dialog.DialogActionsListener;
 import com.getmebag.bag.model.CachedUserData;
+import com.google.auto.value.AutoValue;
+
+import javax.annotation.Nullable;
 
 /**
  * Created by karthiktangirala on 4/19/15.
  */
-public class ProfileItem {
-    private final String itemIndicationIcon;
-    private final String itemDescription;
-    private final String itemDescriptionHeader;
-    private final int itemDescriptionColor;
-    private final int itemDescriptionHeaderColor;
-    private final String itemActionIcon;
-    private final int itemActionType;
-    private final int itemActionIconSize;
-    private final String itemCTAIcon;
-    private final String itemCTADialogMessage;
-    private final String itemCTADialogTitle;
-    private final CachedUserData cachedUserData;
-    private final DialogActionsListener dialogActionsListener;
 
-    public ProfileItem(Builder builder) {
-        this.itemIndicationIcon = builder.itemIndicationIcon;
-        this.itemDescription = builder.itemDescription;
-        this.itemDescriptionHeader = builder.itemDescriptionHeader;
-        this.itemDescriptionColor = builder.itemDescriptionColor;
-        this.itemDescriptionHeaderColor = builder.itemDescriptionHeaderColor;
-        this.itemActionIcon = builder.itemActionIcon;
-        this.itemActionType = builder.itemActionType;
-        this.itemActionIconSize = builder.itemActionIconSize;
-        this.itemCTAIcon = builder.itemCTAIcon;
-        this.itemCTADialogMessage = builder.itemCTADialogMessage;
-        this.cachedUserData = builder.cachedUserData;
-        this.itemCTADialogTitle = builder.itemCTADialogTitle;
-        this.dialogActionsListener = builder.dialogActionsListener;
+@AutoValue
+public abstract class ProfileItem {
+
+    public static Builder builder() {
+        return new AutoValue_ProfileItem.Builder()
+                .setItemDescriptionColor(0)
+                .setItemDescriptionHeaderColor(0)
+                .setItemActionType(0)
+                .setItemActionIconSize(0);
     }
 
-    public String getItemIndicationIcon() {
-        return itemIndicationIcon;
-    }
+    @Nullable
+    public abstract String getItemIndicationIcon();
 
-    public String getItemDescription() {
-        return itemDescription;
-    }
+    @Nullable
+    public abstract String getItemDescription();
 
-    public String getItemDescriptionHeader() {
-        return itemDescriptionHeader;
-    }
+    @Nullable
+    public abstract String getItemDescriptionHeader();
 
-    public int getItemDescriptionColor() {
-        return itemDescriptionColor;
-    }
-    public int getItemDescriptionHeaderColor() {
-        return itemDescriptionHeaderColor;
-    }
+    @Nullable
+    public abstract int getItemDescriptionColor();
 
-    public String getItemActionIcon() {
-        return itemActionIcon;
-    }
+    @Nullable
+    public abstract int getItemDescriptionHeaderColor();
 
-    public int getItemActionType() {
-        return itemActionType;
-    }
+    @Nullable
+    public abstract String getItemActionIcon();
 
-    public int getItemActionIconSize() {
-        return itemActionIconSize;
-    }
+    @Nullable
+    public abstract int getItemActionType();
 
-    public String getItemCTAIcon() {
-        return itemCTAIcon;
-    }
+    @Nullable
+    public abstract int getItemActionIconSize();
 
-    public String getItemCTADialogMessage() {
-        return itemCTADialogMessage;
-    }
+    @Nullable
+    public abstract String getItemCTAIcon();
 
-    public String getItemCTADialogTitle() {
-        return itemCTADialogTitle;
-    }
+    @Nullable
+    public abstract String getItemCTADialogMessage();
 
-    public CachedUserData getCachedUserData() {
-        return cachedUserData;
-    }
+    @Nullable
+    public abstract String getItemCTADialogTitle();
 
-    public DialogActionsListener getDialogActionsListener() {
-        return dialogActionsListener;
-    }
+    @Nullable
+    public abstract CachedUserData getCachedUserData();
 
-    public static class Builder {
+    @Nullable
+    public abstract DialogActionsListener getDialogActionsListener();
 
-        private String itemIndicationIcon;
-        private String itemDescription;
-        private String itemDescriptionHeader;
-        private int itemDescriptionColor;
-        private int itemDescriptionHeaderColor;
-        private String itemActionIcon;
-        private int itemActionType;
-        private int itemActionIconSize;
-        private String itemCTAIcon;
-        private String itemCTADialogMessage;
-        private String itemCTADialogTitle;
-        private CachedUserData cachedUserData;
-        private DialogActionsListener dialogActionsListener;
+    public abstract Builder toBuilder();
 
-        public Builder setItemIndicationIcon(String itemIndicationIcon) {
-            this.itemIndicationIcon = itemIndicationIcon;
-            return this;
-        }
+    @AutoValue.Builder
+    public abstract static class Builder {
 
-        public Builder setItemDescription(String itemDescription) {
-            this.itemDescription = itemDescription;
-            return this;
-        }
+        public abstract Builder setItemIndicationIcon(String itemIndicationIcon);
 
-        public Builder setItemDescriptionHeader(String itemDescriptionHeader) {
-            this.itemDescriptionHeader = itemDescriptionHeader;
-            return this;
-        }
+        public abstract Builder setItemDescription(String itemDescription);
 
-        public Builder setItemDescriptionColor(int itemDescriptionColor) {
-            this.itemDescriptionColor = itemDescriptionColor;
-            return this;
-        }
+        public abstract Builder setItemDescriptionHeader(String itemDescriptionHeader);
 
-        public Builder setItemDescriptionHeaderColor(int itemDescriptionHeaderColor) {
-            this.itemDescriptionHeaderColor = itemDescriptionHeaderColor;
-            return this;
-        }
+        public abstract Builder setItemDescriptionColor(int itemDescriptionColor);
 
-        public Builder setItemActionIcon(String itemActionIcon) {
-            this.itemActionIcon = itemActionIcon;
-            return this;
-        }
+        public abstract Builder setItemDescriptionHeaderColor(int itemDescriptionHeaderColor);
 
-        public Builder setItemActionType(int itemActionType) {
-            this.itemActionType = itemActionType;
-            return this;
-        }
+        public abstract Builder setItemActionIcon(String itemActionIcon);
 
-        public Builder setItemActionIconSize(int itemActionIconSize) {
-            this.itemActionIconSize = itemActionIconSize;
-            return this;
-        }
+        public abstract Builder setItemActionType(int itemActionType);
 
-        public Builder setItemCTAIcon(String itemCTAIcon) {
-            this.itemCTAIcon = itemCTAIcon;
-            return this;
-        }
+        public abstract Builder setItemActionIconSize(int itemActionIconSize);
 
-        public Builder setItemCTADialogMessage(String itemCTADialogMessage) {
-            this.itemCTADialogMessage = itemCTADialogMessage;
-            return this;
-        }
+        public abstract Builder setItemCTAIcon(String itemCTAIcon);
 
-        public Builder setItemCTADialogTitle(String itemCTADialogTitle) {
-            this.itemCTADialogTitle = itemCTADialogTitle;
-            return this;
-        }
+        public abstract Builder setItemCTADialogMessage(String itemCTADialogMessage);
 
-        public Builder setCachedUserData(CachedUserData cachedUserData) {
-            this.cachedUserData = cachedUserData;
-            return this;
-        }
+        public abstract Builder setItemCTADialogTitle(String itemCTADialogTitle);
 
-        public Builder setDialogActionsListener(DialogActionsListener listener) {
-            this.dialogActionsListener = listener;
-            return this;
-        }
+        public abstract Builder setCachedUserData(CachedUserData cachedUserData);
 
-        public ProfileItem build() {
-            return new ProfileItem(this);
-        }
+        public abstract Builder setDialogActionsListener(DialogActionsListener listener);
+
+        public abstract ProfileItem build();
 
     }
 

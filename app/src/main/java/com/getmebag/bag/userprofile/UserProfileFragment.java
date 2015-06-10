@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -123,7 +122,7 @@ public class UserProfileFragment extends BagAuthBaseFragment {
     }
 
     private void addBirthdayRow(ArrayList<ProfileItem> profileItems, int position) {
-        profileItems.add(position, new ProfileItem.Builder()
+        profileItems.add(position, ProfileItem.builder()
                 .setItemIndicationIcon(getString(R.string.icon_font_birthday))
                 .setItemDescription(getBirthDate())
                 .setItemDescriptionColor(getBirthDateDescriptionColor())
@@ -134,7 +133,25 @@ public class UserProfileFragment extends BagAuthBaseFragment {
                 .setDialogActionsListener(new DialogActionsListener() {
                     @Override
                     public void setOnDialogNeutralButtonListener(String date, Dialog dialog) {
-                        updateProfileItem(adapter.getItem(2), date);
+                        ProfileItem dateItem = adapter.getItem(2);
+                        ProfileItem.Builder dateItemBuilder = dateItem.toBuilder();
+
+                        if (!isEmpty(date)) {
+                            dateItemBuilder
+                                    .setItemDescription(date)
+                                    .setItemDescriptionColor(getResources()
+                                            .getColor(R.color.default_theme_dark_text_color));
+                        } else {
+                            dateItemBuilder
+                                    .setItemDescription(getString(R.string.select_your_birthday))
+                                    .setItemDescriptionColor(getResources().getColor(R.color.gray01));
+                        }
+
+                        adapter.remove(dateItem);
+                        adapter.insert(dateItemBuilder.build(),
+                                (dateItem.getItemActionType() - 1));
+                        adapter.notifyDataSetChanged();
+
                         Toast.makeText(getActivity(), date, Toast.LENGTH_LONG).show();
                         dialog.dismiss();
                     }
@@ -156,7 +173,7 @@ public class UserProfileFragment extends BagAuthBaseFragment {
     }
 
     private void addPhoneNumberRow(ArrayList<ProfileItem> profileItems, int position) {
-        profileItems.add(position, new ProfileItem.Builder()
+        profileItems.add(position, ProfileItem.builder()
                 .setItemIndicationIcon(getString(R.string.icon_font_phone))
                 .setItemDescription(getMyPhoneNumber())
                 .setItemActionIcon(getString(R.string.icon_font_edit))
@@ -165,7 +182,25 @@ public class UserProfileFragment extends BagAuthBaseFragment {
                 .setDialogActionsListener(new DialogActionsListener() {
                     @Override
                     public void setOnDialogNeutralButtonListener(String phoneNumber, Dialog dialog) {
-                        updateProfileItem(adapter.getItem(1), phoneNumber);
+                        ProfileItem phoneNumberItem = adapter.getItem(1);
+                        ProfileItem.Builder phoneNumberItemBuilder = phoneNumberItem.toBuilder();
+
+                        if (!isEmpty(phoneNumber)) {
+                            phoneNumberItemBuilder
+                                    .setItemDescription(phoneNumber)
+                                    .setItemDescriptionColor(getResources()
+                                            .getColor(R.color.default_theme_dark_text_color));
+                        } else {
+                            phoneNumberItemBuilder
+                                    .setItemDescription(getString(R.string.enter_your_phone_number))
+                                    .setItemDescriptionColor(getResources().getColor(R.color.gray01));
+                        }
+
+                        adapter.remove(phoneNumberItem);
+                        adapter.insert(phoneNumberItemBuilder.build(),
+                                (phoneNumberItem.getItemActionType() - 1));
+                        adapter.notifyDataSetChanged();
+
                         Toast.makeText(getActivity(), phoneNumber, Toast.LENGTH_LONG).show();
                         dialog.dismiss();
                     }
@@ -188,7 +223,7 @@ public class UserProfileFragment extends BagAuthBaseFragment {
 
     private void addUserNameRow(ArrayList<ProfileItem> profileItems, int position) {
 //        String currentUserNameWithOutSpaces = stripSpaces(currentUser.getCachedUserData().getUserName());
-        ProfileItem.Builder userNameBuilder = new ProfileItem.Builder();
+        ProfileItem.Builder userNameBuilder = ProfileItem.builder();
         if (isThisLoggedInFTX.get()) {
 //            checkIfBagUserAliasExistsInFireBase(currentUserNameWithOutSpaces);
             userNameBuilder
@@ -203,7 +238,24 @@ public class UserProfileFragment extends BagAuthBaseFragment {
 
                         @Override
                         public void setOnDialogNeutralButtonListener(String username, Dialog dialog) {
-                            updateProfileItem(adapter.getItem(0), username);
+                            if (!isEmpty(username)) {
+                                ProfileItem userNameItem = adapter.getItem(0);
+
+                                ProfileItem newUserNameItem = userNameItem.toBuilder()
+                                        .setItemDescription(username)
+                                        .setItemDescriptionColor(getResources()
+                                                .getColor(R.color.default_theme_dark_text_color))
+                                        .setItemDescriptionHeader(getString(R.string.ftx_username_looks_great,
+                                                username))
+                                        .setItemDescriptionHeaderColor(getResources()
+                                                .getColor(R.color.default_theme_warning_solved)).build();
+
+                                adapter.remove(userNameItem);
+                                adapter.insert(newUserNameItem, (userNameItem.getItemActionType() - 1));
+                                adapter.notifyDataSetChanged();
+
+                                nextButton.setEnabled(!isEmpty(username));
+                            }
                             Toast.makeText(getActivity(), username, Toast.LENGTH_LONG).show();
                             dialog.dismiss();
                         }
@@ -301,82 +353,5 @@ public class UserProfileFragment extends BagAuthBaseFragment {
             Toast.makeText(getActivity(), "Please choose a valid username", Toast.LENGTH_LONG).show();
         }
     }
-
-    private void updateProfileItem(ProfileItem item, String newValue) {
-        if ((item.getItemActionType() == USERNAME && !isEmpty(newValue))
-                || (item.getItemActionType() == PHONE_NUMBER)
-                || (item.getItemActionType() == BIRTHDAY)) {
-
-            ProfileItem.Builder profileItemBuilder = new ProfileItem.Builder()
-                    .setItemIndicationIcon(item.getItemIndicationIcon())
-                    .setItemActionIcon(item.getItemActionIcon())
-                    .setItemActionIconSize(item.getItemActionIconSize())
-                    .setItemActionType(item.getItemActionType())
-                    .setItemCTAIcon(item.getItemCTAIcon())
-                    .setItemCTADialogMessage(item.getItemCTADialogMessage())
-                    .setItemCTADialogTitle(item.getItemCTADialogTitle())
-                    .setDialogActionsListener(item.getDialogActionsListener())
-                    .setCachedUserData(item.getCachedUserData());
-
-            //For Username
-            if (item.getItemActionType() == USERNAME) {
-                profileItemBuilder
-                        .setItemDescription(newValue)
-                        .setItemDescriptionColor(getResources()
-                                .getColor(R.color.default_theme_dark_text_color))
-
-                        .setItemDescriptionHeader(getString(R.string.ftx_username_looks_great,
-                                newValue))
-                        .setItemDescriptionHeaderColor(getResources()
-                                .getColor(R.color.default_theme_warning_solved));
-            } else {
-                profileItemBuilder
-                        .setItemDescription(item.getItemDescription())
-                        .setItemDescriptionColor(item.getItemDescriptionColor())
-                        .setItemDescriptionHeader(item.getItemDescriptionHeader())
-                        .setItemDescriptionHeaderColor(item.getItemDescriptionHeaderColor());
-            }
-
-            //For Phone Number
-            if (item.getItemActionType() == PHONE_NUMBER) {
-                if (TextUtils.isEmpty(newValue)) {
-                    profileItemBuilder
-                            .setItemDescription(getString(R.string.enter_your_phone_number))
-                            .setItemDescriptionColor(getResources().getColor(R.color.gray01));
-                } else {
-                    profileItemBuilder
-                            .setItemDescription(newValue)
-                            .setItemDescriptionColor(getResources()
-                                    .getColor(R.color.default_theme_dark_text_color));
-                }
-            }
-
-            //For Birthday
-            if (item.getItemActionType() == BIRTHDAY) {
-                if (TextUtils.isEmpty(newValue)) {
-                    profileItemBuilder
-                            .setItemDescription(getString(R.string.select_your_birthday))
-                            .setItemDescriptionColor(getResources().getColor(R.color.gray01));
-                } else {
-                    profileItemBuilder
-                            .setItemDescription(newValue)
-                            .setItemDescriptionColor(getResources()
-                                    .getColor(R.color.default_theme_dark_text_color));
-                }
-            }
-
-            adapter.remove(item);
-            adapter.insert(profileItemBuilder.build(), (item.getItemActionType() - 1));
-            adapter.notifyDataSetChanged();
-        }
-
-        if ((item.getItemActionType() == USERNAME) && !isEmpty(newValue)) {
-            nextButton.setEnabled(true);
-        } else if ((item.getItemActionType() == USERNAME) && isEmpty(newValue)) {
-            nextButton.setEnabled(false);
-        }
-
-    }
-
 
 }
