@@ -7,15 +7,20 @@ import android.view.LayoutInflater;
 import com.firebase.client.Firebase;
 import com.getmebag.bag.R;
 import com.getmebag.bag.androidspecific.prefs.CustomObjectPreference;
+import com.getmebag.bag.annotations.AllContactsList;
 import com.getmebag.bag.annotations.CurrentUser;
 import com.getmebag.bag.annotations.CurrentUserPreference;
 import com.getmebag.bag.annotations.FireBaseUsersRef;
 import com.getmebag.bag.annotations.ForApplication;
+import com.getmebag.bag.annotations.FrequentContactsList;
 import com.getmebag.bag.annotations.MainFireBaseRef;
 import com.getmebag.bag.app.BagApplication;
+import com.getmebag.bag.connections.ContactListItem;
 import com.getmebag.bag.model.BagUser;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
+
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -96,6 +101,44 @@ public class AndroidModule {
 
     @Provides Context context(@ForApplication Context context) {
         return context;
+    }
+
+    @Provides
+    @Singleton
+    @AllContactsList
+    CustomObjectPreference<ContactsListWrapper> allContactsPreference(SharedPreferences preferences) {
+        return new CustomObjectPreference<>(preferences, "bag_all_contacts", null);
+    }
+
+    @Provides
+    @Singleton
+    @FrequentContactsList
+    CustomObjectPreference<ContactsListWrapper> frequentContactsPreference(SharedPreferences preferences) {
+        return new CustomObjectPreference<>(preferences, "bag_frequent_contacts", null);
+    }
+
+    @Provides
+    @AllContactsList
+    ContactsListWrapper allContactsWrapper(@AllContactsList CustomObjectPreference<ContactsListWrapper> allContactsPreference) {
+        return (ContactsListWrapper) allContactsPreference.get(ContactsListWrapper.class);
+    }
+
+    @Provides
+    @FrequentContactsList
+    ContactsListWrapper frequentContactsWrapper(@FrequentContactsList CustomObjectPreference<ContactsListWrapper> frequentContactsPreference) {
+        return (ContactsListWrapper) frequentContactsPreference.get(ContactsListWrapper.class);
+    }
+
+    @Provides
+    @AllContactsList
+    List<ContactListItem> allContacts(@AllContactsList ContactsListWrapper allContactsWrapper) {
+        return allContactsWrapper.getContactListItems();
+    }
+
+    @Provides
+    @FrequentContactsList
+    List<ContactListItem> frequentContacts(@FrequentContactsList ContactsListWrapper frequentContactsWrapper) {
+        return frequentContactsWrapper.getContactListItems();
     }
 
 /*

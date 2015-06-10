@@ -60,10 +60,15 @@ public class ContactsListAdapter extends ArrayAdapter<Object> {
 
     @Override
     public int getItemViewType(int position) {
-        return (getItem(position) instanceof ContactListItem ? 0 :
-                (getItem(position) instanceof String ? 1 :
-                        (getItem(position) instanceof Boolean ? 2 :
-                                3)));
+        Object currentObject = getItem(position);
+        if (currentObject instanceof FragmentManager) {
+            return 3;
+        } else if (currentObject instanceof Boolean) {
+            return 2;
+        } else if (currentObject instanceof String) {
+            return 1;
+        }
+        return 0;
     }
 
     @Override
