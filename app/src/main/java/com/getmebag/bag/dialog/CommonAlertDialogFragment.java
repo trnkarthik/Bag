@@ -2,7 +2,6 @@ package com.getmebag.bag.dialog;
 
 import android.app.Dialog;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.text.Html;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -23,7 +22,7 @@ import static android.text.TextUtils.isEmpty;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
-public class CommonAlertDialogFragment extends DialogFragment {
+public class CommonAlertDialogFragment extends BagBaseDialogFragment {
 
     private static final String FIELD_MESSAGE = "CommonAlertDialogFragment.Message";
     private static final String FIELD_TITLE = "CommonAlertDialogFragment.Title";

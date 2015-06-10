@@ -12,6 +12,7 @@ import dagger.Module;
                 AndroidModule.class,
         },
         injects = {
+                BagBaseDialogFragment.class,
                 ViewPagerDialogFragment.class,
                 LocationZipCodeDialogFragment.class,
                 UserNameDialogFragment.class,

@@ -3,7 +3,6 @@ package com.getmebag.bag.dialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -36,7 +35,7 @@ import static java.util.Calendar.YEAR;
 /**
  * Created by karthiktangirala on 6/5/15.
  */
-public class DatePickerDialogFragment extends DialogFragment {
+public class DatePickerDialogFragment extends BagBaseDialogFragment {
 
     private static final String FIELD_SELECTED_DATE =
             "PhoneNumberDialogFragment.SelectedPhoneNumber";

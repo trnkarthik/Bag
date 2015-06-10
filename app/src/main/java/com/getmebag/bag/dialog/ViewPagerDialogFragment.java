@@ -1,7 +1,6 @@
 package com.getmebag.bag.dialog;
 
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -24,7 +23,7 @@ import javax.inject.Inject;
 /**
  * Created by karthiktangirala on 5/20/15.
  */
-public class ViewPagerDialogFragment extends DialogFragment {
+public class ViewPagerDialogFragment extends BagBaseDialogFragment {
 
     //Fragments to be added to the viewPager
     @Inject

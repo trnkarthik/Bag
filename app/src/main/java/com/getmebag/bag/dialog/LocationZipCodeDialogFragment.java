@@ -2,7 +2,6 @@ package com.getmebag.bag.dialog;
 
 import android.app.Dialog;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -19,7 +18,7 @@ import static android.text.TextUtils.isEmpty;
 /**
  * Created by karthiktangirala on 5/20/15.
  */
-public class LocationZipCodeDialogFragment extends DialogFragment {
+public class LocationZipCodeDialogFragment extends BagBaseDialogFragment {
 
     private EditText locationDialogEditText;
     private Button locationDialogCancelButton;

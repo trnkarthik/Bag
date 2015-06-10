@@ -11,6 +11,8 @@ import android.widget.Toast;
 
 import com.getmebag.bag.MainActivity;
 import com.getmebag.bag.R;
+import com.getmebag.bag.annotations.AllContactsList;
+import com.getmebag.bag.annotations.FrequentContactsList;
 import com.getmebag.bag.base.BagAuthBaseFragment;
 
 import java.util.ArrayList;
@@ -39,12 +41,15 @@ public class InviteContactsFragment extends BagAuthBaseFragment {
     @Inject
     ContactsListAdapter contactsListAdapter;
 
-    @Inject
-    ContactsProvider contactsProvider;
-
     List<Object> contactListItemList;
-    List<ContactListItem> frequentContacts;
-    List<ContactListItem> allContacts;
+
+    @Inject
+    @AllContactsList
+    List<ContactListItem> allContactsList;
+
+    @Inject
+    @FrequentContactsList
+    List<ContactListItem> frequentContactsList;
 
     @Inject
     public InviteContactsFragment() {
@@ -59,8 +64,6 @@ public class InviteContactsFragment extends BagAuthBaseFragment {
         listView = (ListView) rootView.findViewById(R.id.contacts_listview);
 
         contactListItemList = new ArrayList<>();
-        frequentContacts = new ArrayList<>();
-        allContacts = new ArrayList<>();
 
         contactsListAdapter.addAll(fetchContactsData());
 
@@ -82,25 +85,23 @@ public class InviteContactsFragment extends BagAuthBaseFragment {
     }
 
     private List<Object> fetchContactsData() {
-        frequentContacts = contactsProvider.getFrequentContacts(10);
-        allContacts = contactsProvider.getAllContacts();
 
         //Fragment Manager for Fragment Header
         contactListItemList.add(getActivity().getSupportFragmentManager());
 
         //String for section Header
-        if (frequentContacts.size() > 0) {
+        if (frequentContactsList.size() > 0) {
             contactListItemList.add(getString(R.string.contacts_frequent_contacts));
         }
-        contactListItemList.addAll(frequentContacts);
+        contactListItemList.addAll(frequentContactsList);
 
         //String for section Header
-        if (allContacts.size() > 0) {
+        if (allContactsList.size() > 0) {
             contactListItemList.add(getString(R.string.contacts_all_contacts_header));
         }
-        contactListItemList.addAll(allContacts);
+        contactListItemList.addAll(allContactsList);
 
-        if (allContacts.size() == 0 && frequentContacts.size() == 0) {
+        if (allContactsList.size() == 0 && frequentContactsList.size() == 0) {
             contactListItemList.add(getString(R.string.contacts_no_contacts_share_app));
         }
         //Boolean for share list item

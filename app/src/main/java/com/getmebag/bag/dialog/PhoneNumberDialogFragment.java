@@ -3,7 +3,6 @@ package com.getmebag.bag.dialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -25,7 +24,7 @@ import butterknife.OnClick;
 
 import static android.text.TextUtils.isEmpty;
 
-public class PhoneNumberDialogFragment extends DialogFragment {
+public class PhoneNumberDialogFragment extends BagBaseDialogFragment {
 
     private static final String FIELD_SELECTED_PHONE_NUMBER =
             "PhoneNumberDialogFragment.SelectedPhoneNumber";
