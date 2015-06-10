@@ -1,56 +1,41 @@
 package com.getmebag.bag.settings;
 
+import com.google.auto.value.AutoValue;
+
+import javax.annotation.Nullable;
+
 /**
  * Created by karthiktangirala on 5/11/15.
  */
-public class SettingsListItem {
 
-    private final String mainIcon;
-    private final String title;
-    private final SettingsItemType type;
+@AutoValue
+public abstract class SettingsListItem {
 
-    private SettingsListItem(Builder builder) {
-        this.mainIcon = builder.mainIcon;
-        this.title = builder.title;
-        this.type = builder.type;
+    @Nullable
+    public abstract String getMainIcon();
+
+    @Nullable
+    public abstract String getTitle();
+
+    @Nullable
+    public abstract SettingsItemType getType();
+
+    public abstract Builder toBuilder();
+
+    public static Builder builder() {
+        return new AutoValue_SettingsListItem.Builder();
     }
 
-    public String getMainIcon() {
-        return mainIcon;
-    }
+    @AutoValue.Builder
+    abstract static class Builder {
 
-    public String getTitle() {
-        return title;
-    }
+        abstract Builder setMainIcon(final String mainIcon);
 
-    public SettingsItemType getType() {
-        return type;
-    }
+        abstract Builder setTitle(final String title);
 
-    public static class Builder {
+        abstract Builder setType(final SettingsItemType type);
 
-        private String mainIcon;
-        private String title;
-        private SettingsItemType type;
-
-        public Builder setMainIcon(String mainIcon) {
-            this.mainIcon = mainIcon;
-            return this;
-        }
-
-        public Builder setTitle(String title) {
-            this.title = title;
-            return this;
-        }
-
-        public Builder setType(SettingsItemType type) {
-            this.type = type;
-            return this;
-        }
-
-        public SettingsListItem build() {
-            return new SettingsListItem(this);
-        }
+        abstract SettingsListItem build();
 
     }
 

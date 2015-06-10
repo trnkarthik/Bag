@@ -66,31 +66,31 @@ public class SettingsFragment extends BagAuthBaseFragment {
     }
 
     private void setUpSettingsList() {
-        SettingsListItem helpItem = new SettingsListItem.Builder()
+        SettingsListItem helpItem = SettingsListItem.builder()
                 .setMainIcon(getString(R.string.icon_font_question))
                 .setTitle(getString(R.string.settings_help))
                 .setType(SettingsItemType.HELP)
                 .build();
 
-        SettingsListItem profileItem = new SettingsListItem.Builder()
+        SettingsListItem profileItem = SettingsListItem.builder()
                 .setMainIcon(getString(R.string.icon_font_user))
                 .setTitle(getString(R.string.settings_profile))
                 .setType(SettingsItemType.PROFILE)
                 .build();
 
-        SettingsListItem locationItem = new SettingsListItem.Builder()
+        SettingsListItem locationItem = SettingsListItem.builder()
                 .setMainIcon(getString(R.string.icon_font_location))
                 .setTitle(getString(R.string.settings_location))
                 .setType(SettingsItemType.LOCATION)
                 .build();
 
-        SettingsListItem inviteContactsItem = new SettingsListItem.Builder()
+        SettingsListItem inviteContactsItem = SettingsListItem.builder()
                 .setMainIcon(getString(R.string.icon_font_invite_contacts))
                 .setTitle(getString(R.string.settings_invite_contacts))
                 .setType(SettingsItemType.INVITE_CONTACTS)
                 .build();
 
-        SettingsListItem logoutItem = new SettingsListItem.Builder()
+        SettingsListItem logoutItem = SettingsListItem.builder()
                 .setMainIcon(getString(R.string.icon_font_logout))
                 .setTitle(getString(R.string.settings_logout))
                 .setType(SettingsItemType.LOGOUT)
