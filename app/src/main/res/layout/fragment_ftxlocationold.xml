@@ -21,7 +21,7 @@
             android:layout_marginLeft="@dimen/common_margin"
             android:layout_marginRight="@dimen/common_half_margin"
             android:layout_marginStart="@dimen/common_margin"
-            android:src="@drawable/temp"
+            android:src="@drawable/circular_textview"
             app:border_color="#ffcecece"
             app:border_width="1dp" />
 

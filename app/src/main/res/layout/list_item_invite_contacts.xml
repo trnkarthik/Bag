@@ -41,7 +41,7 @@
             android:layout_gravity="center_vertical"
             android:minHeight="58dp"
             android:minWidth="58dp"
-            android:src="@drawable/temp"
+            android:src="@drawable/circular_textview"
             app:border_color="#ffcecece"
             app:border_width="1dp" />
 

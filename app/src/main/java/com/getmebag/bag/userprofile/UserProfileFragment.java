@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.IconTextView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,6 +23,7 @@ import com.getmebag.bag.base.BagAuthBaseFragment;
 import com.getmebag.bag.dialog.DialogActionsListener;
 import com.getmebag.bag.ftx.FTXLocationActivity;
 import com.getmebag.bag.model.BagUser;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -52,6 +54,9 @@ public class UserProfileFragment extends BagAuthBaseFragment {
 
     @InjectView(R.id.profile_picture)
     CircleImageView profilePicture;
+
+    @InjectView(R.id.profile_picture_alt)
+    IconTextView profilePictureAlt;
 
     @InjectView(R.id.profile_email)
     TextView profileEmail;
@@ -100,12 +105,25 @@ public class UserProfileFragment extends BagAuthBaseFragment {
     }
 
     private void setUpProfilePicture() {
-//        TODO : Sort this out
+        profilePicture.setVisibility(GONE);
+        profilePictureAlt.setVisibility(VISIBLE);
+
         Picasso.with(getActivity())
                 .load(currentUser.getCachedUserData().getProfilePictureURL())
-                .placeholder(R.drawable.temp)
-//                .error(R.drawable.user_placeholder_error)
-                .into(profilePicture);
+                .placeholder(R.drawable.circular_textview)
+                .into(profilePicture, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        profilePictureAlt.setVisibility(GONE);
+                        profilePicture.setVisibility(VISIBLE);
+                    }
+
+                    @Override
+                    public void onError() {
+                        profilePicture.setVisibility(GONE);
+                        profilePictureAlt.setVisibility(VISIBLE);
+                    }
+                });
     }
 
     private void setupProfileListView() {

@@ -1,67 +1,85 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/default_theme_actionbar_text_color"
+    android:orientation="vertical"
     tools:context="com.getmebag.bag.userprofile.UserProfileActivity.UserProfileFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/default_theme_accent2"
-        android:layout_weight="2">
+        android:layout_weight="2"
+        android:background="@color/default_theme_accent2">
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/profile_picture"
+        <LinearLayout
+            android:id="@+id/profile_picture_layout"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_centerInParent="true"
-            app:border_width="1dp"
-            app:border_color="#ffcecece"
-            android:src="@drawable/temp"/>
+            android:layout_centerInParent="true">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profile_picture"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                app:border_color="#ffcecece"
+                app:border_width="1dp"
+                tools:src="@drawable/circular_textview" />
+
+            <IconTextView
+                android:id="@+id/profile_picture_alt"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:gravity="center"
+                android:background="@drawable/circular_textview"
+                android:textColor="@color/default_theme_actionbar_text_color"
+                android:textSize="55sp"
+                android:textAllCaps="true"
+                android:text="@string/icon_font_user" />
+
+        </LinearLayout>
 
         <TextView
+            android:id="@+id/profile_email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/profile_email"
-            android:textSize="16sp"
+            android:layout_below="@id/profile_picture_layout"
             android:layout_centerHorizontal="true"
-            android:layout_below="@id/profile_picture"
-            android:textColor="@color/default_theme_dark_text_color"
-            android:layout_marginTop="@dimen/common_three_forth_margin"
             android:layout_marginBottom="@dimen/common_three_forth_margin"
+            android:layout_marginTop="@dimen/common_three_forth_margin"
             android:fontFamily="sans-serif"
-            android:text="karthik.trn@gmail.com"/>
+            android:text="karthik.trn@gmail.com"
+            android:textColor="@color/default_theme_dark_text_color"
+            android:textSize="16sp" />
 
     </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="#ffebebeb"
-        android:layout_weight="3">
+        android:layout_weight="3"
+        android:background="#ffebebeb">
 
         <ListView
             android:id="@+id/profile_listview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:divider="@null"
-            android:dividerHeight="0dp"/>
+            android:dividerHeight="0dp" />
 
-     </RelativeLayout>
+    </RelativeLayout>
 
     <Button
+        android:id="@+id/profile_next"
+        style="@style/TextStyle.GeneralButton"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_gravity="bottom"
-        android:id="@+id/profile_next"
-        android:text="@string/next"
-        style="@style/TextStyle.GeneralButton"
+        android:layout_weight="0"
         android:background="@drawable/big_button_tap_state"
-        tools:enabled="false"
+        android:text="@string/next"
         android:visibility="visible"
-        android:layout_weight="0"/>
+        tools:enabled="false" />
 
 </LinearLayout>
