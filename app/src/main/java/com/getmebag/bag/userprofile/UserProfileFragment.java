@@ -16,19 +16,21 @@ import android.widget.Toast;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
+import com.firebase.client.MutableData;
+import com.firebase.client.Transaction;
 import com.getmebag.bag.R;
+import com.getmebag.bag.androidspecific.prefs.CustomObjectPreference;
 import com.getmebag.bag.annotations.CurrentUser;
+import com.getmebag.bag.annotations.CurrentUserPreference;
 import com.getmebag.bag.base.BagAuthBaseFragment;
 import com.getmebag.bag.dialog.DialogActionsListener;
 import com.getmebag.bag.ftx.FTXLocationActivity;
 import com.getmebag.bag.model.BagUser;
+import com.getmebag.bag.model.CachedUserData;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -40,6 +42,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import static android.text.TextUtils.isEmpty;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static android.widget.Toast.LENGTH_LONG;
+import static android.widget.Toast.makeText;
 import static com.getmebag.bag.userprofile.ProfileListAdapter.BIRTHDAY;
 import static com.getmebag.bag.userprofile.ProfileListAdapter.PHONE_NUMBER;
 import static com.getmebag.bag.userprofile.ProfileListAdapter.USERNAME;
@@ -68,7 +72,9 @@ public class UserProfileFragment extends BagAuthBaseFragment {
     @CurrentUser
     BagUser currentUser;
 
-    Map<String, Boolean> usernameAvailability = new HashMap<>();
+    @Inject
+    @CurrentUserPreference
+    CustomObjectPreference<BagUser> currentUserPreference;
 
     private ProfileListAdapter adapter;
 
@@ -170,7 +176,7 @@ public class UserProfileFragment extends BagAuthBaseFragment {
                                 (dateItem.getItemActionType() - 1));
                         adapter.notifyDataSetChanged();
 
-                        Toast.makeText(getActivity(), date, Toast.LENGTH_LONG).show();
+                        makeText(getActivity(), date, LENGTH_LONG).show();
                         dialog.dismiss();
                     }
 
@@ -219,7 +225,7 @@ public class UserProfileFragment extends BagAuthBaseFragment {
                                 (phoneNumberItem.getItemActionType() - 1));
                         adapter.notifyDataSetChanged();
 
-                        Toast.makeText(getActivity(), phoneNumber, Toast.LENGTH_LONG).show();
+                        makeText(getActivity(), phoneNumber, LENGTH_LONG).show();
                         dialog.dismiss();
                     }
 
@@ -240,13 +246,11 @@ public class UserProfileFragment extends BagAuthBaseFragment {
     }
 
     private void addUserNameRow(ArrayList<ProfileItem> profileItems, int position) {
-//        String currentUserNameWithOutSpaces = stripSpaces(currentUser.getCachedUserData().getUserName());
         ProfileItem.Builder userNameBuilder = ProfileItem.builder();
         if (isThisLoggedInFTX.get()) {
-//            checkIfBagUserAliasExistsInFireBase(currentUserNameWithOutSpaces);
             userNameBuilder
                     .setItemIndicationIcon(getString(R.string.icon_font_user))
-                    .setItemDescription(getString(R.string.choose_a_username))
+                    .setItemDescription(getBagUserName())
                     .setCachedUserData(currentUser.getCachedUserData())
                     .setItemActionIcon(getString(R.string.icon_font_edit))
                     .setItemDescriptionColor(getResources()
@@ -274,7 +278,7 @@ public class UserProfileFragment extends BagAuthBaseFragment {
 
                                 nextButton.setEnabled(!isEmpty(username));
                             }
-                            Toast.makeText(getActivity(), username, Toast.LENGTH_LONG).show();
+                            makeText(getActivity(), username, LENGTH_LONG).show();
                             dialog.dismiss();
                         }
 
@@ -294,10 +298,17 @@ public class UserProfileFragment extends BagAuthBaseFragment {
         } else {
             userNameBuilder
                     .setItemIndicationIcon(getString(R.string.icon_font_user))
-                    .setItemDescription(getString(R.string.choose_a_username));
+                    .setItemDescription(getBagUserName());
         }
 
         profileItems.add(position, userNameBuilder.build());
+    }
+
+    private String getBagUserName() {
+        if (currentUser.getBagUserName() != null) {
+            return currentUser.getBagUserName();
+        }
+        return getString(R.string.choose_a_username);
     }
 
     private String getBirthDate() {
@@ -332,44 +343,112 @@ public class UserProfileFragment extends BagAuthBaseFragment {
                 : getString(R.string.enter_your_phone_number);
     }
 
-    private void checkIfBagUserAliasExistsInFireBase(final String alias) {
-        Firebase firebase = new Firebase(getString(R.string.firebase_bag_user_alias_url) +
+    private void checkIfBagUserAliasExistsInFireBaseSaveIfNot(final String alias) {
+        Firebase aliasFirebaseRef = new Firebase(getString(R.string.firebase_bag_user_alias_url) +
                 alias);
-        firebase.addListenerForSingleValueEvent(new ValueEventListener() {
+
+        aliasFirebaseRef.runTransaction(new Transaction.Handler() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.getValue() == null) {
-                    //Username available
-                    usernameAvailability.put(alias, true);
+            public Transaction.Result doTransaction(MutableData currentData) {
+                if (currentData.getValue() == null) {
+                    currentData.setValue(currentUser.getUniqueId());
+                    return Transaction.success(currentData);
                 } else {
-                    //Username taken
-                    usernameAvailability.put(alias, false);
-                    refreshUserNameRow(alias);
+                    Toast.makeText(getActivity(),
+                            "Username already taken.Please choose a different one.",
+                            LENGTH_LONG).show();
+                    return Transaction.abort();
                 }
             }
 
             @Override
-            public void onCancelled(FirebaseError firebaseError) {
-                usernameAvailability.put(alias, null);
+            public void onComplete(FirebaseError firebaseError, boolean committed, DataSnapshot dataSnapshot) {
+                if (firebaseError == null) {
+                    //Save updated data in local and launch next screen.
+                    updateLocalUserObject();
+                    launchNextScreen();
+                } else {
+                    nextButton.setEnabled(false);
+                    Toast.makeText(getActivity(),
+                            "Some Error! Please try again.",
+                            LENGTH_LONG).show();
+                }
             }
-        });
+        }, false);
     }
 
-    private void refreshUserNameRow(String alias) {
-        if (usernameAvailability.get(alias) != null && !usernameAvailability.get(alias)) {
-            //TODO :
+    private void updateLocalUserObject() {
+        CachedUserData cachedUserData = new CachedUserData.Builder(currentUser.getCachedUserData())
+                .setBirthDate(getCurrentSetBirthday()).build();
+        BagUser bagUser = new BagUser.Builder(currentUser)
+                .setCachedUserData(cachedUserData)
+                .setPhoneNumber(getCurrentSetPhoneNumber())
+                .setBagUserName(getCurrentSetUserName())
+                .build();
+        currentUserPreference.set(bagUser);
+    }
+
+    private String getCurrentSetUserName() {
+        String currentUserName = adapter
+                .getItem(ProfileListAdapter.USERNAME - 1).getItemDescription();
+        if (currentUserName != null &&
+                !currentUserName.equals(getString(R.string.choose_a_username))) {
+            return currentUserName;
         }
+        return null;
+    }
+
+    private String getCurrentSetPhoneNumber() {
+        String currentPhoneNumber = adapter
+                .getItem(ProfileListAdapter.PHONE_NUMBER - 1).getItemDescription();
+        if (currentPhoneNumber != null &&
+                !currentPhoneNumber.equals(getString(R.string.enter_your_phone_number))) {
+            return currentPhoneNumber;
+        }
+        return null;
+    }
+
+    private String getCurrentSetBirthday() {
+        String currentBirthday = adapter
+                .getItem(ProfileListAdapter.BIRTHDAY - 1).getItemDescription();
+        if (currentBirthday != null &&
+                !currentBirthday.equals(getString(R.string.select_your_birthday))) {
+            return currentBirthday;
+        }
+        return null;
     }
 
     @OnClick(R.id.profile_next)
     public void profileScreenNextButton(View view) {
         if (view.isEnabled()) {
-            startActivity(FTXLocationActivity.intent(getActivity()));
-            getActivity().overridePendingTransition(R.anim.slide_in_right,
-                    R.anim.slide_out_left);
-        } else {
-            Toast.makeText(getActivity(), "Please choose a valid username", Toast.LENGTH_LONG).show();
+            String currentUserName = adapter.getItem(USERNAME - 1).getItemDescription();
+            if (currentUserName != null &&
+                    !currentUserName.equals(getString(R.string.choose_a_username))) {
+                checkIfBagUserAliasExistsInFireBaseSaveIfNot(currentUserName);
+
+                firebaseUsersRef.child(currentUser.getUniqueId())
+                        .child(getString(R.string.firebase_user_phone_number_url_part))
+                        .setValue(getCurrentSetPhoneNumber());
+
+                firebaseUsersRef.child(currentUser.getUniqueId())
+                        .child(getString(R.string.firebase_user_bag_username_url_part))
+                        .setValue(getCurrentSetUserName());
+
+                firebaseUsersRef.child(currentUser.getUniqueId())
+                        .child(getString(R.string.firebase_cached_user_data_url_part))
+                        .child(getString(R.string.firebase_user_birthday_url_part))
+                        .setValue(getCurrentSetBirthday());
+
+            } else {
+                makeText(getActivity(), "Please choose a valid username", LENGTH_LONG).show();
+            }
         }
+    }
+
+    private void launchNextScreen() {
+        startActivity(FTXLocationActivity.intent(getActivity()));
+        getActivity().overridePendingTransition(R.anim.slide_in_right,
+                R.anim.slide_out_left);
     }
 
 }

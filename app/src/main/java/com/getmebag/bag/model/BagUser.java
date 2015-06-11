@@ -100,6 +100,19 @@ public class BagUser {
             return this;
         }
 
+        public Builder(BagUser bagUser) {
+            this.provider = bagUser.provider;
+            this.providerId = bagUser.providerId;
+            this.token = bagUser.token;
+            this.cachedUserData = bagUser.cachedUserData;
+            this.location = bagUser.location;
+            this.phoneNumber = bagUser.phoneNumber;
+            this.bagUserName = bagUser.bagUserName;
+        }
+
+        public Builder() {
+        }
+
         public BagUser build() {
             return new BagUser(this);
         }

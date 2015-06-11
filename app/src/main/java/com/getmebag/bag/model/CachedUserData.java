@@ -18,7 +18,6 @@ public class CachedUserData {
 
     private CachedUserData(Builder builder) {
         this.accessToken = builder.accessToken;
-
         this.email = builder.email;
         this.profilePictureURL = builder.profilePictureURL;
         this.userName = builder.userName;
@@ -68,7 +67,6 @@ public class CachedUserData {
     public static class Builder {
 
         private String accessToken;
-
         private String email;
         private String profilePictureURL;
         private String userName;
@@ -121,6 +119,21 @@ public class CachedUserData {
         public Builder setProfileLink(String profileLink) {
             this.profileLink = profileLink;
             return this;
+        }
+
+        public Builder(CachedUserData cachedUserData) {
+            this.accessToken = cachedUserData.accessToken;
+            this.email = cachedUserData.email;
+            this.profilePictureURL = cachedUserData.profilePictureURL;
+            this.userName = cachedUserData.userName;
+            this.firstName = cachedUserData.firstName;
+            this.lastName = cachedUserData.lastName;
+            this.birthDate = cachedUserData.birthDate;
+            this.gender = cachedUserData.gender;
+            this.profileLink = cachedUserData.profileLink;
+        }
+
+        public Builder() {
         }
 
         public CachedUserData build() {

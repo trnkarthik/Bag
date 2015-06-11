@@ -9,7 +9,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
@@ -299,16 +298,10 @@ public class FTXLocationFragment extends BagAuthBaseFragment implements DialogAc
     }
 
     private void addLocationToLocalUserObject(BagUser currentUser, UserLocation userLocation) {
-        BagUser bagUser = new BagUser.Builder()
-                .setProvider(currentUser.getProvider())
-                .setProviderId(currentUser.getProviderId())
-                .setToken(currentUser.getToken())
-                .setCachedUserData(currentUser.getCachedUserData())
+        currentUserPreference.set(new BagUser
+                .Builder(currentUser)
                 .setLocation(userLocation)
-                .setPhoneNumber(currentUser.getPhoneNumber())
-                .setBagUserName(currentUser.getBagUserName())
-                .build();
-        currentUserPreference.set(bagUser);
+                .build());
     }
 
     private void reviseVisibility() {
