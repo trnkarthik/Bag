@@ -1,10 +1,7 @@
 package com.getmebag.bag.userprofile;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.support.v4.app.FragmentManager;
-import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -89,6 +86,8 @@ public class ProfileListAdapter extends ArrayAdapter<ProfileItem> {
         if (profileItem.getItemActionType() != 0) {
             setViewOnclick(holder.description, profileItem.getItemActionType(),
                     profileItem.getDialogActionsListener());
+        } else {
+            holder.description.setOnClickListener(null);
         }
 
         setDescriptionHeader(holder.descriptionHeader, profileItem.getItemDescriptionHeader(),
@@ -163,6 +162,7 @@ public class ProfileListAdapter extends ArrayAdapter<ProfileItem> {
             setViewOnclick(actionIcon, itemActionType, dialogActionsListener);
         } else {
             actionIcon.setVisibility(GONE);
+            actionIcon.setOnClickListener(null);
         }
     }
 
